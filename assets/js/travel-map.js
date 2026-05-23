@@ -3,9 +3,9 @@
 
   var MAP_CONTAINER_ID = 'travel-map';
   var PLACES_URL = 'assets/data/travel-places.json';
-  var COUNTRIES_URL = 'assets/data/visited-countries.geojson';
-  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
+  var COUNTRIES_URL = 'assets/data/world-countries.geojson';
+  var DEFAULT_CENTER = [20, 0];
+  var DEFAULT_ZOOM = 2;
   var SINGLE_PLACE_ZOOM = 8;
   var FALLBACK_MIN_ZOOM = 2;
   var FIT_BOUNDS_MAX_ZOOM = 5;
@@ -13,6 +13,7 @@
     [-85, -180],
     [85, 180]
   ];
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
   var HINT_CITIES =
     'By City: drag to pan and zoom. Click a marker for a short card and gallery link.';
@@ -28,7 +29,7 @@
   var countryPinLayer = null;
   var currentMode = 'cities';
   var allPlaces = [];
-  var visitedCountryGeojson = null;
+  var visitedCountryCodes = {};
   var placesByCountry = {};
   var countryCentroids = {};
   var countryNamesByCode = {};
@@ -142,7 +143,7 @@
 
   function getCountryCodeFromFeature(feature) {
     var props = feature.properties || {};
-    return props.ISO_A2 || props.iso_a2 || '';
+    return props.ISO_A2 || props.iso_a2 || props.ISO_A2_EH || '';
   }
 
   function countryStyle() {
@@ -150,31 +151,9 @@
       fillColor: '#2c5282',
       fillOpacity: 0.45,
       color: 'transparent',
-      weight: 0
+      weight: 0,
+      className: 'travel-country-visited'
     };
-  }
-
-  function extendBounds(bounds, lng, lat) {
-    if (!bounds) {
-      return L.latLngBounds([lat, lng], [lat, lng]);
-    }
-    return bounds.extend([lat, lng]);
-  }
-
-  function boundsFromGeometry(geometry, bounds) {
-    if (!geometry) return bounds;
-
-    function walkCoords(coords) {
-      if (typeof coords[0] === 'number') {
-        return extendBounds(bounds, coords[0], coords[1]);
-      }
-      for (var i = 0; i < coords.length; i++) {
-        bounds = walkCoords(coords[i]);
-      }
-      return bounds;
-    }
-
-    return walkCoords(geometry.coordinates);
   }
 
   function indexCountryNames(geojson) {
@@ -190,14 +169,13 @@
   }
 
   function indexPlaces(places) {
+    visitedCountryCodes = {};
     placesByCountry = {};
     countryCentroids = {};
-    cityBounds = null;
 
     places.forEach(function (place) {
-      cityBounds = extendBounds(cityBounds, place.lng, place.lat);
-
       if (!place.countryCode) return;
+      visitedCountryCodes[place.countryCode] = true;
       if (!placesByCountry[place.countryCode]) {
         placesByCountry[place.countryCode] = [];
       }
@@ -224,30 +202,20 @@
     });
   }
 
-  function computeCountryBounds(geojson) {
-    countryBounds = null;
-    if (!geojson || !Array.isArray(geojson.features)) return;
-
-    geojson.features.forEach(function (feature) {
-      countryBounds = boundsFromGeometry(feature.geometry, countryBounds);
-    });
-  }
-
   function getFillMinZoom(map) {
-    var bounds = L.latLngBounds(MAP_MAX_BOUNDS);
-    var zoom = map.getBoundsZoom(bounds, false);
+    var zoom = map.getBoundsZoom(MAP_MAX_BOUNDS, false);
     if (zoom === Infinity || zoom === -Infinity || isNaN(zoom)) {
       return FALLBACK_MIN_ZOOM;
     }
     return zoom;
   }
 
-  function updateMinZoomToFill(map) {
+  function updateMinZoomToFill(map, tileLayer) {
     map.invalidateSize();
     var fillZoom = getFillMinZoom(map);
     map.setMinZoom(fillZoom);
-    if (activeTileLayer) {
-      activeTileLayer.setMinZoom(fillZoom);
+    if (tileLayer) {
+      tileLayer.setMinZoom(fillZoom);
     }
     if (map.getZoom() < fillZoom) {
       map.setZoom(fillZoom);
@@ -275,7 +243,7 @@
     if (!activeMap) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
-      updateMinZoomToFill(activeMap);
+      updateMinZoomToFill(activeMap, activeTileLayer);
     }, 150);
   }
 
@@ -304,19 +272,6 @@
     }
   }
 
-  function showCountryLayers() {
-    if (!activeMap || !countryLayer || !countryPinLayer) return;
-    if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
-    if (!activeMap.hasLayer(countryPinLayer)) activeMap.addLayer(countryPinLayer);
-    countryPinLayer.bringToFront();
-  }
-
-  function hideCountryLayers() {
-    if (!activeMap || !countryLayer || !countryPinLayer) return;
-    if (activeMap.hasLayer(countryPinLayer)) activeMap.removeLayer(countryPinLayer);
-    if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
-  }
-
   function fitForMode(map) {
     if (currentMode === 'cities') {
       if (allPlaces.length === 1) {
@@ -330,6 +285,19 @@
       map.fitBounds(L.latLngBounds(MAP_MAX_BOUNDS), { padding: [20, 20] });
     }
     enforceMinZoom(map);
+  }
+
+  function showCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
+    if (!activeMap.hasLayer(countryPinLayer)) activeMap.addLayer(countryPinLayer);
+    countryPinLayer.bringToFront();
+  }
+
+  function hideCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (activeMap.hasLayer(countryPinLayer)) activeMap.removeLayer(countryPinLayer);
+    if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
   }
 
   function setMode(mode) {
@@ -352,7 +320,7 @@
     updateLegend();
     fitForMode(activeMap);
     setTimeout(function () {
-      updateMinZoomToFill(activeMap);
+      updateMinZoomToFill(activeMap, activeTileLayer);
     }, 100);
   }
 
@@ -373,39 +341,23 @@
 
   function buildCityLayer(places) {
     var group = L.layerGroup();
+    var bounds = L.latLngBounds([]);
     var pinIcon = createTravelPinIcon();
 
     places.forEach(function (place) {
-      var marker = L.marker([place.lat, place.lng], { icon: pinIcon });
+      var latLng = L.latLng(place.lat, place.lng);
+      bounds.extend(latLng);
+
+      var marker = L.marker(latLng, { icon: pinIcon });
       marker.bindPopup(buildPlacePopupContent(place), {
         maxWidth: 280,
-        className: 'travel-map-popup'
+        className: 'travel-leaflet-popup'
       });
       group.addLayer(marker);
     });
 
+    cityBounds = bounds;
     return group;
-  }
-
-  function buildCountryLayer(geojson) {
-    return L.geoJSON(geojson, {
-      style: countryStyle,
-      onEachFeature: function (feature, layer) {
-        var code = getCountryCodeFromFeature(feature);
-        var name = (feature.properties && feature.properties.name) || countryNamesByCode[code] || code;
-
-        layer.bindPopup(buildCountryPopupContent(code, name), {
-          maxWidth: 280,
-          className: 'travel-map-popup'
-        });
-        layer.on('mouseover', function () {
-          layer.setStyle({ fillOpacity: 0.58 });
-        });
-        layer.on('mouseout', function () {
-          layer.setStyle(countryStyle());
-        });
-      }
-    });
   }
 
   function buildCountryPinLayer() {
@@ -414,10 +366,11 @@
 
     Object.keys(countryCentroids).forEach(function (code) {
       var centroid = countryCentroids[code];
-      var marker = L.marker([centroid.lat, centroid.lng], { icon: pinIcon });
+      var latLng = L.latLng(centroid.lat, centroid.lng);
+      var marker = L.marker(latLng, { icon: pinIcon });
       marker.bindPopup(buildCountryPopupContent(code, centroid.name), {
         maxWidth: 280,
-        className: 'travel-map-popup'
+        className: 'travel-leaflet-popup'
       });
       group.addLayer(marker);
     });
@@ -425,27 +378,51 @@
     return group;
   }
 
-  function finishSetup(map) {
-    currentMode = 'cities';
-    bindToolbar();
-    updateToolbar();
-    updateHint();
-    updateLegend();
-    fitForMode(map);
-    updateMinZoomToFill(map);
+  function buildCountryLayer(geojson) {
+    var visitedBounds = L.latLngBounds([]);
+    var layer = L.geoJSON(geojson, {
+      filter: function (feature) {
+        var code = getCountryCodeFromFeature(feature);
+        return Boolean(code && visitedCountryCodes[code]);
+      },
+      style: function () {
+        return countryStyle();
+      },
+      onEachFeature: function (feature, layerRef) {
+        var code = getCountryCodeFromFeature(feature);
+        var name = (feature.properties && feature.properties.name) || countryNamesByCode[code] || code;
+
+        if (layerRef.getBounds) {
+          visitedBounds.extend(layerRef.getBounds());
+        }
+
+        layerRef.options.className = 'travel-country-visited';
+        layerRef.bindPopup(buildCountryPopupContent(code, name), {
+          maxWidth: 280,
+          className: 'travel-leaflet-popup'
+        });
+        layerRef.on('mouseover', function () {
+          layerRef.setStyle({ fillOpacity: 0.58 });
+        });
+        layerRef.on('mouseout', function () {
+          layerRef.setStyle(countryStyle());
+        });
+      }
+    });
+
+    countryBounds = visitedBounds.isValid() ? visitedBounds : L.latLngBounds(MAP_MAX_BOUNDS);
+    return layer;
   }
 
-  function initLeafletMap(container, places, geojson) {
+  function initMap(container, places, geojson) {
     if (typeof L === 'undefined') {
       showMessage(container, 'Map library failed to load. Please refresh the page.');
       return;
     }
 
-    visitedCountryGeojson = geojson;
     indexCountryNames(geojson);
     allPlaces = places;
     indexPlaces(places);
-    computeCountryBounds(geojson);
     container.innerHTML = '';
 
     var map = L.map(container, {
@@ -458,41 +435,33 @@
     });
 
     var tileLayer = L.tileLayer(TILE_URL, {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      minZoom: FALLBACK_MIN_ZOOM,
-      maxZoom: 19,
-      noWrap: true
-    });
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        minZoom: FALLBACK_MIN_ZOOM,
+        maxZoom: 19,
+        noWrap: true
+      }
+    );
     tileLayer.addTo(map);
 
     cityLayer = buildCityLayer(places);
     countryLayer = buildCountryLayer(geojson);
     countryPinLayer = buildCountryPinLayer();
 
+    currentMode = 'cities';
     map.addLayer(cityLayer);
 
     bindMapResizeHandlers(map, tileLayer);
+    bindToolbar();
+    updateToolbar();
+    updateHint();
+    updateLegend();
+    fitForMode(map);
 
-    map.whenReady(function () {
-      map.invalidateSize();
-      finishSetup(map);
-    });
-  }
-
-  function startMap(container, places, geojson) {
-    function run() {
-      requestAnimationFrame(function () {
-        initLeafletMap(container, places, geojson);
-      });
-    }
-
-    if (document.readyState === 'complete') {
-      run();
-    } else {
-      window.addEventListener('load', run, { once: true });
-    }
+    setTimeout(function () {
+      updateMinZoomToFill(map, tileLayer);
+    }, 100);
   }
 
   function loadMapData() {
@@ -530,13 +499,12 @@
           return;
         }
 
-        startMap(container, places, geojson);
+        initMap(container, places, geojson);
       })
-      .catch(function (err) {
-        console.error('Travel map data error:', err);
+      .catch(function () {
         showMessage(
           container,
-          'Could not load travel map data. Check assets/data/travel-places.json and visited-countries.geojson.'
+          'Could not load travel map data. Check JSON/GeoJSON files and use a local server.'
         );
       });
   }
