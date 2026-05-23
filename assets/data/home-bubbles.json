@@ -1,0 +1,90 @@
+[
+  {
+    "id": "tennis",
+    "image": "images/geek.jpeg",
+    "intro": "网球 — 周末最期待的出汗方式。",
+    "link": null,
+    "x": 8,
+    "y": 12,
+    "size": 80,
+    "delay": 0,
+    "mobile": true
+  },
+  {
+    "id": "climbing",
+    "image": "images/travel.JPG",
+    "intro": "攀岩 — 在岩壁上找平衡与专注。",
+    "link": null,
+    "x": 88,
+    "y": 18,
+    "size": 72,
+    "delay": 1.2,
+    "mobile": true
+  },
+  {
+    "id": "pet",
+    "image": "images/selfie.jpg",
+    "intro": "毛孩子 — 家里最软的那一块。",
+    "link": null,
+    "x": 6,
+    "y": 72,
+    "size": 68,
+    "delay": 0.6,
+    "mobile": true
+  },
+  {
+    "id": "research",
+    "image": "images/geek.jpeg",
+    "intro": "Research — 学术主页，论文与项目。",
+    "link": "/portfolio/",
+    "x": 90,
+    "y": 68,
+    "size": 76,
+    "delay": 2.0,
+    "mobile": true
+  },
+  {
+    "id": "podcast",
+    "image": "images/podcast.jpg",
+    "intro": "废话联翩 — 听我用声音胡思乱想。",
+    "link": "https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd",
+    "x": 14,
+    "y": 42,
+    "size": 70,
+    "delay": 1.8,
+    "mobile": false
+  },
+  {
+    "id": "reading",
+    "image": "images/reading.jpeg",
+    "intro": "Reading — 读书笔记与思考。",
+    "link": "reading.html",
+    "x": 82,
+    "y": 42,
+    "size": 74,
+    "delay": 0.9,
+    "mobile": true
+  },
+  {
+    "id": "travel",
+    "image": "images/travel.JPG",
+    "intro": "Travel — 在路上留下的足迹。",
+    "link": "travel.html",
+    "x": 22,
+    "y": 82,
+    "size": 66,
+    "delay": 2.4,
+    "mobile": true
+  },
+  {
+    "id": "gallery",
+    "image": "images/nikon.jpeg",
+    "intro": "Gallery — 透过镜头看世界。",
+    "link": "gallery.html",
+    "x": 78,
+    "y": 85,
+    "size": 70,
+    "delay": 1.5,
+    "mobile": false
+  }
+]
