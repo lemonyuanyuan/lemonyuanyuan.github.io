@@ -11,16 +11,6 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""
     />
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-        crossorigin=""
-    />
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-        crossorigin=""
-    />
     <link rel="stylesheet" href="assets/css/travel-map.css">
 </head>
 <body>
@@ -55,7 +45,9 @@
                 <p class="travel-map-hint">
                     Drag to pan; scroll or pinch to zoom. Click a marker for a short card and a link to that place's gallery.
                 </p>
-                <div id="travel-map" class="travel-map" aria-label="Travel map"></div>
+                <div class="travel-map-frame">
+                    <div id="travel-map" class="travel-map" aria-label="Travel map"></div>
+                </div>
             </div>
 
             <ul class="actions stacked" style="margin-top: 2rem;">
@@ -76,10 +68,6 @@
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
-    ></script>
-    <script
-        src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
         crossorigin=""
     ></script>
     <script src="assets/js/travel-map.js"></script>

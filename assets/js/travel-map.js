@@ -16,6 +16,7 @@
   var activeMap = null;
   var activeTileLayer = null;
   var resizeTimer = null;
+  var travelPinIcon = null;
 
   function escapeHtml(text) {
     if (!text) return '';
@@ -39,6 +40,25 @@
       !isNaN(place.lat) &&
       !isNaN(place.lng)
     );
+  }
+
+  function createTravelPinIcon() {
+    if (travelPinIcon) return travelPinIcon;
+
+    travelPinIcon = L.divIcon({
+      className: 'travel-map-pin-wrap',
+      html:
+        '<span class="travel-map-pin" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 36" width="24" height="36" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="currentColor"/>' +
+        '<circle cx="12" cy="12" r="4" fill="#fff"/>' +
+        '</svg></span>',
+      iconSize: [24, 36],
+      iconAnchor: [12, 36],
+      popupAnchor: [0, -36]
+    });
+
+    return travelPinIcon;
   }
 
   function buildPopupContent(place) {
@@ -125,11 +145,6 @@
       return;
     }
 
-    if (typeof L.markerClusterGroup !== 'function') {
-      showMessage(container, 'Map clustering failed to load. Please refresh the page.');
-      return;
-    }
-
     container.innerHTML = '';
 
     var map = L.map(container, {
@@ -141,35 +156,33 @@
       worldCopyJump: false
     });
 
-    var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      minZoom: FALLBACK_MIN_ZOOM,
-      maxZoom: 19,
-      noWrap: true
-    });
+    var tileLayer = L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        minZoom: FALLBACK_MIN_ZOOM,
+        maxZoom: 19,
+        noWrap: true
+      }
+    );
     tileLayer.addTo(map);
 
     var bounds = L.latLngBounds([]);
-    var clusterGroup = L.markerClusterGroup({
-      showCoverageOnHover: false,
-      maxClusterRadius: 50,
-      spiderfyOnMaxZoom: true
-    });
+    var pinIcon = createTravelPinIcon();
 
     places.forEach(function (place) {
       var latLng = L.latLng(place.lat, place.lng);
       bounds.extend(latLng);
 
-      var marker = L.marker(latLng);
+      var marker = L.marker(latLng, { icon: pinIcon });
       marker.bindPopup(buildPopupContent(place), {
         maxWidth: 280,
         className: 'travel-leaflet-popup'
       });
-      clusterGroup.addLayer(marker);
+      marker.addTo(map);
     });
-
-    map.addLayer(clusterGroup);
 
     if (places.length === 1) {
       map.setView([places[0].lat, places[0].lng], SINGLE_PLACE_ZOOM);
