@@ -12,6 +12,10 @@
     [-60, -170],
     [75, 170]
   ];
+  var WORLD_BOUNDS_CORNERS = [
+    [-85, -180],
+    [85, 180]
+  ];
 
   function escapeHtml(text) {
     if (!text) return '';
@@ -76,6 +80,27 @@
     }
   }
 
+  function getMinZoomToFillContainer(map) {
+    map.invalidateSize();
+    var size = map.getSize();
+    if (!size.x || !size.y) {
+      return MIN_ZOOM;
+    }
+
+    var worldBounds = L.latLngBounds(WORLD_BOUNDS_CORNERS[0], WORLD_BOUNDS_CORNERS[1]);
+    var fillZoom = map.getBoundsZoom(worldBounds, true);
+    return Math.max(MIN_ZOOM, fillZoom);
+  }
+
+  function updateMinZoomForContainer(map, tileLayer) {
+    var fillZoom = getMinZoomToFillContainer(map);
+    map.setMinZoom(fillZoom);
+    if (tileLayer) {
+      tileLayer.options.minZoom = fillZoom;
+    }
+    enforceMinZoom(map);
+  }
+
   function initMap(container, places) {
     if (typeof L === 'undefined') {
       showMessage(container, 'Map library failed to load. Please refresh the page.');
@@ -93,7 +118,7 @@
       worldCopyJump: false
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       minZoom: MIN_ZOOM,
@@ -124,11 +149,22 @@
       map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
     }
 
-    enforceMinZoom(map);
+    updateMinZoomForContainer(map, tileLayer);
+
+    map.on('zoomend', function () {
+      enforceMinZoom(map);
+    });
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        updateMinZoomForContainer(map, tileLayer);
+      }, 150);
+    });
 
     setTimeout(function () {
-      map.invalidateSize();
-      enforceMinZoom(map);
+      updateMinZoomForContainer(map, tileLayer);
     }, 100);
   }
 

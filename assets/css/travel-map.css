@@ -25,7 +25,7 @@
 
 .travel-map.leaflet-container,
 .travel-map .leaflet-container {
-  background: rgba(144, 144, 144, 0.12);
+  background: #aad3df;
   font-family: inherit;
 }
 

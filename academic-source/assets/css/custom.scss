@@ -1,15 +1,24 @@
 ---
 ---
 
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=Noto+Serif+SC:wght@200;300&family=Source+Sans+3:wght@400;500;600&display=swap");
 
 body {
   background-color: #f7f8fa;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#main {
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .page__content {
   color: #1f2937;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .page__content a {
@@ -22,6 +31,7 @@ body {
 }
 
 .page__content h1 {
+  font-family: "Source Sans 3", sans-serif;
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -32,6 +42,7 @@ body {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  font-family: "Source Sans 3", sans-serif;
 }
 
 .profile_box {
@@ -47,11 +58,16 @@ body {
 }
 
 .author__name--rotate {
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: "Cormorant Garamond", "Noto Serif SC", Georgia, serif;
   font-weight: 300;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   line-height: 1.2;
   font-size: 1.75rem;
+}
+
+.name-rotate__item:last-child {
+  font-family: "Noto Serif SC", serif;
+  font-weight: 200;
 }
 
 .sidebar .author__name--rotate {
@@ -83,13 +99,8 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.25rem;
-  margin: 1.5rem 0 2rem;
-}
-
-@media (min-width: 768px) {
-  .float-card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  margin: 1.5rem auto 2rem;
+  max-width: 40rem;
 }
 
 .float-card {
@@ -99,11 +110,22 @@ body {
   background: #fff;
   padding: 1.25rem 1.5rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-family: "Source Sans 3", sans-serif;
 }
 
 .float-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+
+.float-card__image {
+  display: block;
+  max-width: 140px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  object-fit: cover;
 }
 
 .float-card__badge {

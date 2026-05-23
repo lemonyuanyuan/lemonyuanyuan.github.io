@@ -10,6 +10,9 @@
 <div class="float-card-grid">
   {% for card in cards %}
   <article class="float-card">
+    {% if card.image %}
+    <img src="{{ card.image | relative_url }}" alt="{{ card.title }}" class="float-card__image">
+    {% endif %}
     {% if card.badge %}
     <span class="float-card__badge">{{ card.badge }}</span>
     {% endif %}

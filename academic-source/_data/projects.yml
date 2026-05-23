@@ -1,7 +1,9 @@
+# 每条可填 image: images/你的图.png（文件放在 academic-source/images/ 下）
 - title: "Engineering Project (Placeholder)"
   venue: "Personal / Course Project"
   authors: "Xinyuan Wang"
   description: "A short description of what you built, the stack, and the outcome."
+  image: images/500x300.png
   badge: "Software"
   links:
     - label: "GitHub"

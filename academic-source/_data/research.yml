@@ -1,7 +1,9 @@
+# 每条可填 image: images/你的图.png（文件放在 academic-source/images/ 下）
 - title: "Paper / Topic Title (Placeholder)"
   venue: "Conference / Journal 20XX"
   authors: "Xinyuan Wang, Co-author A, Co-author B"
   description: "One-line summary of the research contribution. Replace with your actual work."
+  image: images/500x300.png
   badge: "Preprint"
   links:
     - label: "PDF"
