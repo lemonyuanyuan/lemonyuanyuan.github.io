@@ -47,10 +47,10 @@
 
 .hero-landing__intro-img {
   position: absolute;
-  bottom: 58%;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  width: min(120%, 620px);
+  width: min(130%, 680px);
   height: auto;
   object-fit: contain;
   z-index: 3;
@@ -65,7 +65,7 @@
   transform: none;
   z-index: 4;
   width: auto;
-  max-width: min(42vw, 20rem);
+  max-width: none;
   padding: 0;
   text-align: right;
   pointer-events: none;
@@ -80,6 +80,7 @@
   line-height: 1.15;
   color: #4a453c;
   margin: 0 0 0.01rem;
+  white-space: nowrap;
 }
 
 .hero-landing__explore {
@@ -198,18 +199,17 @@
   }
 
   .hero-landing__intro-img {
-    bottom: 58%;
-    width: min(112%, 480px);
+    bottom: 62%;
+    width: min(118%, 520px);
   }
 
   .hero-landing__footer-wrap {
     right: 4%;
     bottom: 4%;
-    max-width: min(55vw, 16rem);
   }
 
   .hero-landing__tagline {
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     line-height: 1.12;
     margin-bottom: 0.15rem;
   }

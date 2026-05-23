@@ -75,23 +75,11 @@
 
     if (this.portraitEl) {
       var p = this.portraitEl.getBoundingClientRect();
-      var left = p.left - heroRect.left;
-      var top = p.top - heroRect.top;
-      var w = p.width;
-      var h = p.height;
-
       zones.push({
-        left: left - SAFE_ZONE_PADDING,
-        top: top + h * (1 / 3) - SAFE_ZONE_PADDING,
-        right: left + w + SAFE_ZONE_PADDING,
-        bottom: top + h + SAFE_ZONE_PADDING,
-      });
-
-      zones.push({
-        left: left + w * (1 / 6) - SAFE_ZONE_PADDING,
-        top: top - SAFE_ZONE_PADDING,
-        right: left + w * (5 / 6) + SAFE_ZONE_PADDING,
-        bottom: top + h + SAFE_ZONE_PADDING,
+        left: p.left - heroRect.left - SAFE_ZONE_PADDING,
+        top: p.top - heroRect.top - SAFE_ZONE_PADDING,
+        right: p.right - heroRect.left + SAFE_ZONE_PADDING,
+        bottom: p.bottom - heroRect.top + SAFE_ZONE_PADDING,
       });
     }
 
@@ -102,16 +90,6 @@
         top: i.top - heroRect.top - SAFE_ZONE_PADDING,
         right: i.right - heroRect.left + SAFE_ZONE_PADDING,
         bottom: i.bottom - heroRect.top + SAFE_ZONE_PADDING,
-      });
-    }
-
-    if (this.footerWrapEl) {
-      var f = this.footerWrapEl.getBoundingClientRect();
-      zones.push({
-        left: f.left - heroRect.left - SAFE_ZONE_PADDING,
-        top: f.top - heroRect.top - SAFE_ZONE_PADDING,
-        right: f.right - heroRect.left + SAFE_ZONE_PADDING,
-        bottom: f.bottom - heroRect.top + SAFE_ZONE_PADDING,
       });
     }
 
