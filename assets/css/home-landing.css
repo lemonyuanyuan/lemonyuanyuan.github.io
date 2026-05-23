@@ -1,9 +1,9 @@
-/* Home landing hero — transparent floaters with physics */
+/* Home landing hero — bottom portrait, overlay intro, floaters behind */
 
 .hero-landing {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   min-height: 100vh;
   overflow: hidden;
@@ -13,7 +13,7 @@
 .hero-landing__floaters {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -21,41 +21,81 @@
   pointer-events: auto;
 }
 
-.hero-landing__center {
+.hero-landing__stage {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  max-width: 42rem;
-  padding: 2rem 1.5rem 3rem;
-  pointer-events: none;
+  width: 100%;
+  max-width: 520px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-.hero-landing__center a,
-.hero-landing__center button,
-.hero-landing__center .actions {
-  pointer-events: auto;
+.hero-landing__stage.is-visible {
+  opacity: 1;
 }
 
 .hero-landing__portrait {
-  width: min(400px, 68vw);
+  width: min(480px, 82vw);
   height: auto;
   object-fit: contain;
-  margin-bottom: 1.75rem;
+  display: block;
+  margin-bottom: 0;
+}
+
+.hero-landing__intro-wrap {
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(90%, 36rem);
+  padding: 1.25rem 1.5rem 1rem;
+  text-align: center;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 12px 12px 0 0;
+}
+
+.hero-landing__intro-wrap a {
+  pointer-events: auto;
 }
 
 .hero-landing__intro {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1.65;
   color: #3d4449;
-  margin-bottom: 1.75rem;
+  margin: 0;
 }
 
 .hero-landing__intro strong {
   font-weight: 600;
   color: #2a2f33;
+}
+
+.hero-landing__explore {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: #5a6268;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(90, 98, 104, 0.35);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-landing__explore:hover {
+  color: #2a2f33;
+  border-color: #2a2f33;
 }
 
 /* Name rotate (Xinyuan / 心元) */
@@ -86,8 +126,14 @@
   position: absolute;
   left: 0;
   top: 0;
-  will-change: transform;
+  will-change: transform, opacity;
   cursor: default;
+  opacity: 0;
+}
+
+.hero-floater.is-visible {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .hero-floater--link {
@@ -153,26 +199,19 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Story preload fade-in compatibility */
-body.is-preload .hero-landing.onload-content-fade-up .hero-landing__center {
-  opacity: 0;
-  transform: translateY(1rem);
-}
-
-.hero-landing.onload-content-fade-up .hero-landing__center {
-  transition: opacity 0.75s ease-in-out, transform 0.75s ease-in-out;
-}
-
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
   .hero-landing__portrait {
-    width: min(300px, 62vw);
-    margin-bottom: 1.25rem;
+    width: min(360px, 88vw);
+  }
+
+  .hero-landing__intro-wrap {
+    bottom: 18%;
+    padding: 1rem 1.1rem 0.85rem;
   }
 
   .hero-landing__intro {
-    font-size: 1rem;
-    padding: 0 0.5rem;
+    font-size: 0.95rem;
   }
 
   .hero-floater__tooltip {
@@ -183,11 +222,17 @@ body.is-preload .hero-landing.onload-content-fade-up .hero-landing__center {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-landing .name-rotate__item {
+  .hero-landing__stage {
+    transition: none;
+    opacity: 1;
+  }
+
+  .hero-floater {
+    opacity: 1;
     transition: none;
   }
 
-  .hero-landing.onload-content-fade-up .hero-landing__center {
+  .hero-landing .name-rotate__item {
     transition: none;
   }
 }

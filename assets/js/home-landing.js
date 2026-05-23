@@ -3,9 +3,11 @@
 
   var FLOATERS_URL = "assets/data/home-bubbles.json";
   var MOBILE_BREAKPOINT = 768;
-  var SAFE_ZONE_PADDING = 24;
+  var SAFE_ZONE_PADDING = 12;
   var SPEED_MIN = 0.15;
   var SPEED_MAX = 0.35;
+  var BURST_DURATION_MS = 900;
+  var BURST_SPEED = 5;
 
   function prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -37,13 +39,17 @@
     }, intervalMs);
   }
 
-  function FloatEngine(heroEl, floatersContainer, centerEl) {
+  function FloatEngine(heroEl, floatersContainer, portraitEl, introWrapEl, stageEl) {
     this.heroEl = heroEl;
     this.floatersContainer = floatersContainer;
-    this.centerEl = centerEl;
+    this.portraitEl = portraitEl;
+    this.introWrapEl = introWrapEl;
+    this.stageEl = stageEl;
     this.items = [];
     this.rafId = null;
     this.running = false;
+    this.bursting = false;
+    this.burstStart = 0;
     this.reducedMotion = prefersReducedMotion();
   }
 
@@ -54,17 +60,32 @@
     };
   };
 
-  FloatEngine.prototype.getSafeZone = function () {
-    if (!this.centerEl) return null;
+  FloatEngine.prototype.getPortraitOrigin = function () {
+    if (!this.portraitEl) {
+      var bounds = this.getBounds();
+      return { x: bounds.width / 2, y: bounds.height / 2 };
+    }
 
     var heroRect = this.heroEl.getBoundingClientRect();
-    var centerRect = this.centerEl.getBoundingClientRect();
+    var portraitRect = this.portraitEl.getBoundingClientRect();
 
     return {
-      left: centerRect.left - heroRect.left - SAFE_ZONE_PADDING,
-      top: centerRect.top - heroRect.top - SAFE_ZONE_PADDING,
-      right: centerRect.right - heroRect.left + SAFE_ZONE_PADDING,
-      bottom: centerRect.bottom - heroRect.top + SAFE_ZONE_PADDING,
+      x: portraitRect.left - heroRect.left + portraitRect.width / 2,
+      y: portraitRect.top - heroRect.top + portraitRect.height / 2,
+    };
+  };
+
+  FloatEngine.prototype.getSafeZone = function () {
+    if (!this.introWrapEl) return null;
+
+    var heroRect = this.heroEl.getBoundingClientRect();
+    var introRect = this.introWrapEl.getBoundingClientRect();
+
+    return {
+      left: introRect.left - heroRect.left - SAFE_ZONE_PADDING,
+      top: introRect.top - heroRect.top - SAFE_ZONE_PADDING,
+      right: introRect.right - heroRect.left + SAFE_ZONE_PADDING,
+      bottom: introRect.bottom - heroRect.top + SAFE_ZONE_PADDING,
     };
   };
 
@@ -93,82 +114,26 @@
       vx: config.vx != null ? config.vx : randomSpeed(),
       vy: config.vy != null ? config.vy : randomSpeed(),
       paused: false,
+      index: index,
     };
 
     this.items.push(item);
-    this.randomizePosition(item, index);
-    this.renderItem(item);
     this.bindHover(item);
-  };
 
-  FloatEngine.prototype.placeOutsideSafeZone = function (item, index) {
-    var bounds = this.getBounds();
-    var safeZone = this.getSafeZone();
-    var margin = 20;
-    var slots = [
-      { x: margin, y: margin },
-      { x: bounds.width - item.width - margin, y: margin },
-      { x: margin, y: bounds.height - item.height - margin },
-      {
-        x: bounds.width - item.width - margin,
-        y: bounds.height - item.height - margin,
-      },
-      { x: margin, y: (bounds.height - item.height) / 2 },
-      {
-        x: bounds.width - item.width - margin,
-        y: (bounds.height - item.height) / 2,
-      },
-      { x: (bounds.width - item.width) / 2, y: margin },
-      {
-        x: (bounds.width - item.width) / 2,
-        y: bounds.height - item.height - margin,
-      },
-    ];
-    var start = (index || 0) % slots.length;
-
-    for (var i = 0; i < slots.length; i++) {
-      var slot = slots[(start + i) % slots.length];
-      item.x = Math.max(0, Math.min(slot.x, bounds.width - item.width));
-      item.y = Math.max(0, Math.min(slot.y, bounds.height - item.height));
-      if (!safeZone || !this.intersectsSafeZone(item, safeZone)) {
-        return;
-      }
+    if (this.reducedMotion) {
+      this.randomizePosition(item);
+      wrapper.classList.add("is-visible");
+      this.renderItem(item);
     }
   };
 
-  FloatEngine.prototype.randomizePosition = function (item, index) {
+  FloatEngine.prototype.randomizePosition = function (item) {
     var bounds = this.getBounds();
     var maxX = Math.max(0, bounds.width - item.width);
     var maxY = Math.max(0, bounds.height - item.height);
-    var safeZone = this.getSafeZone();
-    var attempts = 0;
-    var maxAttempts = 80;
 
-    do {
-      item.x = maxX > 0 ? Math.random() * maxX : 0;
-      item.y = maxY > 0 ? Math.random() * maxY : 0;
-      attempts++;
-    } while (
-      attempts < maxAttempts &&
-      safeZone &&
-      this.intersectsSafeZone(item, safeZone)
-    );
-
-    if (safeZone && this.intersectsSafeZone(item, safeZone)) {
-      this.placeOutsideSafeZone(item, index);
-    }
-  };
-
-  FloatEngine.prototype.intersectsSafeZone = function (item, zone) {
-    var itemRight = item.x + item.width;
-    var itemBottom = item.y + item.height;
-
-    return !(
-      itemRight <= zone.left ||
-      item.x >= zone.right ||
-      itemBottom <= zone.top ||
-      item.y >= zone.bottom
-    );
+    item.x = maxX > 0 ? Math.random() * maxX : 0;
+    item.y = maxY > 0 ? Math.random() * maxY : 0;
   };
 
   FloatEngine.prototype.clampPosition = function (item) {
@@ -186,10 +151,8 @@
   };
 
   FloatEngine.prototype.bindHover = function (item) {
-    var self = this;
-
     item.el.addEventListener("mouseenter", function () {
-      item.paused = true;
+      if (!item.bursting) item.paused = true;
     });
 
     item.el.addEventListener("mouseleave", function () {
@@ -197,7 +160,7 @@
     });
 
     item.el.addEventListener("focusin", function () {
-      item.paused = true;
+      if (!item.bursting) item.paused = true;
     });
 
     item.el.addEventListener("focusout", function () {
@@ -221,6 +184,18 @@
       item.y = bounds.height - item.height;
       item.vy = -Math.abs(item.vy);
     }
+  };
+
+  FloatEngine.prototype.intersectsSafeZone = function (item, zone) {
+    var itemRight = item.x + item.width;
+    var itemBottom = item.y + item.height;
+
+    return !(
+      itemRight <= zone.left ||
+      item.x >= zone.right ||
+      itemBottom <= zone.top ||
+      item.y >= zone.bottom
+    );
   };
 
   FloatEngine.prototype.resolveSafeZoneCollision = function (item, zone) {
@@ -263,7 +238,57 @@
     }
   };
 
+  FloatEngine.prototype.setupBurst = function () {
+    var origin = this.getPortraitOrigin();
+    var count = this.items.length;
+    var angleStep = (Math.PI * 2) / Math.max(count, 1);
+
+    for (var i = 0; i < this.items.length; i++) {
+      var item = this.items[i];
+      var angle = angleStep * i + randomBetween(-0.25, 0.25);
+      var speed = BURST_SPEED * randomBetween(0.85, 1.15);
+
+      item.x = origin.x - item.width / 2;
+      item.y = origin.y - item.height / 2;
+      item.vx = Math.cos(angle) * speed;
+      item.vy = Math.sin(angle) * speed;
+      item.bursting = true;
+      item.el.classList.add("is-visible");
+      this.renderItem(item);
+    }
+
+    this.bursting = true;
+    this.burstStart = performance.now();
+  };
+
+  FloatEngine.prototype.tickBurst = function (elapsed) {
+    var bounds = this.getBounds();
+    var progress = Math.min(elapsed / BURST_DURATION_MS, 1);
+    var damping = 1 - progress * 0.35;
+
+    for (var i = 0; i < this.items.length; i++) {
+      var item = this.items[i];
+      item.x += item.vx * damping;
+      item.y += item.vy * damping;
+      this.clampPosition(item);
+      this.renderItem(item);
+    }
+
+    if (progress >= 1) {
+      this.bursting = false;
+      for (var j = 0; j < this.items.length; j++) {
+        this.items[j].bursting = false;
+      }
+    }
+  };
+
   FloatEngine.prototype.tick = function () {
+    if (this.bursting) {
+      var elapsed = performance.now() - this.burstStart;
+      this.tickBurst(elapsed);
+      return;
+    }
+
     var bounds = this.getBounds();
     var safeZone = this.getSafeZone();
 
@@ -291,7 +316,7 @@
   };
 
   FloatEngine.prototype.start = function () {
-    if (this.reducedMotion || this.running) return;
+    if (this.running) return;
     this.running = true;
     this.loop();
   };
@@ -309,6 +334,27 @@
       this.clampPosition(this.items[i]);
       this.renderItem(this.items[i]);
     }
+  };
+
+  FloatEngine.prototype.playIntro = function () {
+    var self = this;
+
+    if (this.stageEl) {
+      this.stageEl.classList.add("is-visible");
+    }
+
+    if (this.reducedMotion) {
+      return Promise.resolve();
+    }
+
+    this.setupBurst();
+    this.start();
+
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve();
+      }, BURST_DURATION_MS + 50);
+    });
   };
 
   function createFloaterElement(config) {
@@ -360,7 +406,9 @@
   function initFloaters() {
     var heroEl = document.querySelector(".hero-landing");
     var floatersContainer = document.querySelector(".hero-landing__floaters");
-    var centerEl = document.querySelector(".hero-landing__center");
+    var portraitEl = document.querySelector(".hero-landing__portrait");
+    var introWrapEl = document.querySelector(".hero-landing__intro-wrap");
+    var stageEl = document.querySelector(".hero-landing__stage");
 
     if (!heroEl || !floatersContainer) return;
 
@@ -372,7 +420,13 @@
         })
         .then(function (floaters) {
           var isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-          var engine = new FloatEngine(heroEl, floatersContainer, centerEl);
+          var engine = new FloatEngine(
+            heroEl,
+            floatersContainer,
+            portraitEl,
+            introWrapEl,
+            stageEl
+          );
           var pending = [];
 
           floaters.forEach(function (config, index) {
@@ -392,11 +446,16 @@
           });
         })
         .then(function (engine) {
-          if (!engine || !engine.items.length) return;
-
-          if (!engine.reducedMotion) {
-            engine.start();
+          if (!engine || !engine.items.length) {
+            if (stageEl) stageEl.classList.add("is-visible");
+            return;
           }
+
+          engine.playIntro().then(function () {
+            if (!engine.reducedMotion && !engine.running) {
+              engine.start();
+            }
+          });
 
           window.addEventListener("resize", function () {
             engine.onResize();
@@ -412,6 +471,7 @@
         })
         .catch(function (err) {
           console.warn("Home floaters:", err);
+          if (stageEl) stageEl.classList.add("is-visible");
         });
     }
 
