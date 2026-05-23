@@ -1,16 +1,16 @@
 [
   {
     "id": "tennis",
-    "image": "images/geek.jpeg",
-    "intro": "网球 — 周末最期待的出汗方式。",
+    "image": "images/home/tennis.png",
+    "intro": "The inner game of tennis.",
     "link": null,
     "size": 80,
     "mobile": true
   },
   {
     "id": "climbing",
-    "image": "images/travel.JPG",
-    "intro": "攀岩 — 在岩壁上找平衡与专注。",
+    "image": "images/home/climbing.png",
+    "intro": "Climb on!",
     "link": null,
     "size": 72,
     "mobile": true

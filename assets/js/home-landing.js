@@ -105,9 +105,31 @@
     var bounds = this.getBounds();
     var maxX = Math.max(0, bounds.width - item.width);
     var maxY = Math.max(0, bounds.height - item.height);
+    var safeZone = this.getSafeZone();
+    var attempts = 0;
+    var maxAttempts = 40;
 
-    item.x = maxX > 0 ? Math.random() * maxX : 0;
-    item.y = maxY > 0 ? Math.random() * maxY : 0;
+    do {
+      item.x = maxX > 0 ? Math.random() * maxX : 0;
+      item.y = maxY > 0 ? Math.random() * maxY : 0;
+      attempts++;
+    } while (
+      attempts < maxAttempts &&
+      safeZone &&
+      this.intersectsSafeZone(item, safeZone)
+    );
+  };
+
+  FloatEngine.prototype.intersectsSafeZone = function (item, zone) {
+    var itemRight = item.x + item.width;
+    var itemBottom = item.y + item.height;
+
+    return !(
+      itemRight <= zone.left ||
+      item.x >= zone.right ||
+      itemBottom <= zone.top ||
+      item.y >= zone.bottom
+    );
   };
 
   FloatEngine.prototype.clampPosition = function (item) {
@@ -271,7 +293,7 @@
     img.className = "hero-floater__img";
     img.src = config.image;
     img.alt = config.id;
-    img.loading = "lazy";
+    img.loading = "eager";
     img.draggable = false;
 
     var tooltip = document.createElement("span");
@@ -303,52 +325,68 @@
 
     if (!heroEl || !floatersContainer) return;
 
-    fetch(FLOATERS_URL)
-      .then(function (response) {
-        if (!response.ok) throw new Error("Failed to load floaters");
-        return response.json();
-      })
-      .then(function (floaters) {
-        var isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-        var engine = new FloatEngine(heroEl, floatersContainer, centerEl);
-        var pending = [];
+    function startEngine() {
+      fetch(FLOATERS_URL)
+        .then(function (response) {
+          if (!response.ok) throw new Error("Failed to load floaters");
+          return response.json();
+        })
+        .then(function (floaters) {
+          var isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+          var engine = new FloatEngine(heroEl, floatersContainer, centerEl);
+          var pending = [];
 
-        floaters.forEach(function (config) {
-          if (isMobile && config.mobile === false) return;
+          floaters.forEach(function (config) {
+            if (isMobile && config.mobile === false) return;
 
-          var created = createFloaterElement(config);
-          floatersContainer.appendChild(created.wrapper);
-          pending.push(
-            loadImage(created.img).then(function () {
-              engine.addItem(config, created.wrapper, created.img);
-            })
-          );
-        });
+            var created = createFloaterElement(config);
+            floatersContainer.appendChild(created.wrapper);
+            pending.push(
+              loadImage(created.img).then(function () {
+                engine.addItem(config, created.wrapper, created.img);
+              })
+            );
+          });
 
-        return Promise.all(pending).then(function () {
-          return engine;
-        });
-      })
-      .then(function (engine) {
-        if (!engine.reducedMotion) {
-          engine.start();
-        }
+          return Promise.all(pending).then(function () {
+            return engine;
+          });
+        })
+        .then(function (engine) {
+          if (!engine || !engine.items.length) return;
 
-        window.addEventListener("resize", function () {
-          engine.onResize();
-        });
-
-        document.addEventListener("visibilitychange", function () {
-          if (document.hidden) {
-            engine.stop();
-          } else if (!engine.reducedMotion) {
+          if (!engine.reducedMotion) {
             engine.start();
           }
+
+          window.addEventListener("resize", function () {
+            engine.onResize();
+          });
+
+          document.addEventListener("visibilitychange", function () {
+            if (document.hidden) {
+              engine.stop();
+            } else if (!engine.reducedMotion) {
+              engine.start();
+            }
+          });
+        })
+        .catch(function (err) {
+          console.warn("Home floaters:", err);
         });
-      })
-      .catch(function (err) {
-        console.warn("Home floaters:", err);
-      });
+    }
+
+    if (document.readyState === "complete") {
+      window.requestAnimationFrame(startEngine);
+    } else {
+      window.addEventListener(
+        "load",
+        function () {
+          window.requestAnimationFrame(startEngine);
+        },
+        { once: true }
+      );
+    }
   }
 
   if (document.readyState === "loading") {
