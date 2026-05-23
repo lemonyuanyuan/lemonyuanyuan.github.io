@@ -179,9 +179,36 @@ $sidebar-profile-width: 175px;
     margin: 0 auto 0.75rem;
   }
 
-  .author__content,
+  .author__content {
+    display: block !important;
+    width: 100%;
+    max-width: $sidebar-profile-width;
+    min-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
   .author__urls_sm {
-    max-width: 100%;
+    max-width: $sidebar-profile-width;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .author__name,
+  .author__name--rotate {
+    display: block;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .name-rotate {
+    justify-items: center;
+    width: 100%;
   }
 
   .sidebar {
@@ -236,11 +263,13 @@ $sidebar-profile-width: 175px;
   grid-area: 1 / 1;
   position: relative;
   opacity: 0;
+  visibility: hidden;
   transition: opacity 0.8s ease;
   white-space: nowrap;
   text-align: center;
   font-family: $site-font-family;
   font-weight: 700;
+  justify-self: center;
 }
 
 .sidebar .author__name--rotate {
@@ -249,6 +278,7 @@ $sidebar-profile-width: 175px;
 
 .name-rotate {
   display: grid;
+  justify-items: center;
   place-items: center;
   width: 100%;
   min-height: 1.8em;
@@ -257,6 +287,7 @@ $sidebar-profile-width: 175px;
 
 .name-rotate__item.is-active {
   opacity: 1;
+  visibility: visible;
 }
 
 .float-card-grid {
