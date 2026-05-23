@@ -53,13 +53,6 @@
   display: none;
 }
 
-.travel-map .leaflet-overlay-pane path.travel-country-visited {
-  fill: #2c5282 !important;
-  fill-opacity: 0.45 !important;
-  stroke: transparent !important;
-  stroke-width: 0 !important;
-}
-
 .travel-map-frame {
   padding: 2rem;
   background: #faf8f4;
@@ -78,19 +71,17 @@
   overflow: hidden;
 }
 
-.travel-map.leaflet-container,
-.travel-map .leaflet-container {
-  background: #eef3f8;
+.travel-map.maplibregl-map,
+.travel-map .maplibregl-map {
   font-family: inherit;
 }
 
-.travel-map .leaflet-control-zoom a {
+.travel-map .maplibregl-ctrl-group button {
   color: rgba(0, 0, 0, 0.65);
   background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.12);
 }
 
-.travel-map .leaflet-control-zoom a:hover {
+.travel-map .maplibregl-ctrl-group button:hover {
   color: #000;
   background: #fff;
 }
@@ -98,6 +89,7 @@
 .travel-map-pin-wrap {
   background: transparent;
   border: none;
+  cursor: pointer;
 }
 
 .travel-map-pin {
@@ -134,18 +126,17 @@
   color: rgba(0, 0, 0, 0.55);
 }
 
-.travel-leaflet-popup .leaflet-popup-content-wrapper {
+.travel-map-popup .maplibregl-popup-content {
+  padding: 0.75rem 1rem;
+  line-height: 1.5;
   border-radius: 4px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  font-family: inherit;
 }
 
-.travel-leaflet-popup .leaflet-popup-content {
-  margin: 0.75rem 1rem;
-  line-height: 1.5;
-}
-
-.travel-leaflet-popup .leaflet-popup-tip {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.travel-map-popup .maplibregl-popup-tip {
+  border-top-color: #fff;
+  border-bottom-color: #fff;
 }
 
 .travel-popup-title {
