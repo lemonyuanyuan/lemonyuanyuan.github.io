@@ -18,23 +18,27 @@ redirect_from:
 
 # Biography
 
-My name is **Xinyuan Wang** (王心元). I am a student/researcher at [Your University](https://example.com) (replace with your department link), working on **machine learning**, **robotics**, and **computer vision**. An overview of my work is on the [Research](#-research) and [Projects](#-projects) sections below.
+My name is **Xinyuan Wang** (王心元). I love study! (for real?)
+
+<!-- My name is **Xinyuan Wang** (王心元). I am a student at [University of Michigan, Ann Arbor](https://example.com), working on **machine learning**, **robotics**, and **computer vision**. An overview of my work is on the [Research](#-research) and [Projects](#-projects) sections below.
 
 Previously, I have been interested in [related topic or past lab](https://example.com) with [Advisor Name](https://example.com). I am also building tools and writing about [topics you care about](https://example.com).
 
-I am also enthusiastic about travel and photography — see my [personal site](https://lemonyuanyuan.github.io) for more.
+I am also enthusiastic about travel and photography — see my [personal site](https://lemonyuanyuan.github.io) for more. -->
 
 <span class='anchor' id='-educations'></span>
 # Educations
 
-- *Present — TODO*, Degree, [University Name](https://example.com).
-- *20XX — 20XX*, Degree, [University Name](https://example.com).
+<!-- - *Present — TODO*, Degree, [University Name](https://example.com).
+- *20XX — 20XX*, Degree, [University Name](https://example.com). -->
 
 <span class='anchor' id='-news'></span>
 # News
 
-- *2025.05*: Academic homepage launched at [lemonyuanyuan.github.io/portfolio/](https://lemonyuanyuan.github.io/portfolio/).
-- *TODO*: Add your latest news here (paper accepted, internship, etc.).
+- 2004.09.25: I am born!
+
+<!-- - *2025.05*: Academic homepage launched at [lemonyuanyuan.github.io/portfolio/](https://lemonyuanyuan.github.io/portfolio/).
+- *TODO*: Add your latest news here (paper accepted, internship, etc.). -->
 
 <span class='anchor' id='-research'></span>
 # Research
@@ -56,6 +60,7 @@ I am also enthusiastic about travel and photography — see my [personal site](h
 
 ## Beyond Research
 
-Personal site for travel, photography, podcast, and life beyond academia:
+Enthusiast about every other than study.
+<!-- Personal site for travel, photography, podcast, and life beyond academia: -->
 
-<a class="beyond-research-link" href="https://lemonyuanyuan.github.io" target="_blank" rel="noopener">Visit lemonyuanyuan.github.io</a>
+<a class="beyond-research-link" href="https://lemonyuanyuan.github.io" target="_blank" rel="noopener">Visit my personal website</a>

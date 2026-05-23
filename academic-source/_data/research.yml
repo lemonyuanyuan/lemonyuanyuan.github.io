@@ -1,21 +1,44 @@
-# 每条可填 image: images/你的图.png（文件放在 academic-source/images/ 下）
-- title: "Paper / Topic Title (Placeholder)"
-  venue: "Conference / Journal 20XX"
-  authors: "Xinyuan Wang, Co-author A, Co-author B"
-  description: "One-line summary of the research contribution. Replace with your actual work."
-  image: images/500x300.png
-  badge: "Preprint"
-  links:
-    - label: "PDF"
-      url: "#"
-    - label: "Code"
-      url: "https://github.com/lemonyuanyuan"
+# # 每条可填 image: images/你的图.png（文件放在 academic-source/images/ 下）
+# - title: "Paper / Topic Title (Placeholder)"
+#   venue: "Conference / Journal 20XX"
+#   authors: "Xinyuan Wang, Co-author A, Co-author B"
+#   description: "One-line summary of the research contribution. Replace with your actual work."
+#   image: images/500x300.png
+#   badge: "Preprint"
+#   links:
+#     - label: "PDF"
+#       url: "#"
+#     - label: "Code"
+#       url: "https://github.com/lemonyuanyuan"
 
-- title: "Another Research Entry (Placeholder)"
-  venue: "Workshop 20XX"
-  authors: "Co-author A, **Xinyuan Wang**"
-  description: "Brief description of methods and results."
-  badge: "Under review"
+# - title: "Another Research Entry (Placeholder)"
+#   venue: "Workshop 20XX"
+#   authors: "Co-author A, **Xinyuan Wang**"
+#   description: "Brief description of methods and results."
+#   badge: "Under review"
+#   links:
+#     - label: "Paper"
+#       url: "#"
+
+
+# 每条可填 image: images/你的图.png（文件放在 academic-source/images/ 下）
+- title: "Bullshit Generator  "
+  venue: "Personal Project"
+  authors: "Xinyuan Wang"
+  description: "A tool to generate bullshit text."
+  image: images/geek.jpeg
+  badge: "Software"
   links:
-    - label: "Paper"
+    - label: "GitHub"
+      url: "https://github.com/lemonyuanyuan"
+    - label: "Demo"
       url: "#"
+
+# - title: "Another Research Entry (Placeholder)"
+#   venue: "Workshop 20XX"
+#   authors: "Co-author A, **Xinyuan Wang**"
+#   description: "Brief description of methods and results."
+#   badge: "Under review"
+#   links:
+#     - label: "Paper"
+#       url: "#"
