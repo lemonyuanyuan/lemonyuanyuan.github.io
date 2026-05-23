@@ -328,6 +328,46 @@
     "countryCode": "NL"
   },
   {
+    "id": "london",
+    "name": "London",
+    "region": "United Kingdom",
+    "lat": 51.5074,
+    "lng": -0.1278,
+    "date": "2026/5",
+    "summary": "Thames walks, museums, and borough streets.",
+    "countryCode": "GB"
+  },
+  {
+    "id": "oxford",
+    "name": "Oxford",
+    "region": "United Kingdom",
+    "lat": 51.752,
+    "lng": -1.2577,
+    "date": "2026/5",
+    "summary": "College spires and meadows along the Cherwell.",
+    "countryCode": "GB"
+  },
+  {
+    "id": "cambridge",
+    "name": "Cambridge",
+    "region": "United Kingdom",
+    "lat": 52.2053,
+    "lng": 0.1218,
+    "date": "2026/5",
+    "summary": "Punts on the Cam and quiet cobbled lanes.",
+    "countryCode": "GB"
+  },
+  {
+    "id": "york",
+    "name": "York",
+    "region": "United Kingdom",
+    "lat": 53.959,
+    "lng": -1.0815,
+    "date": "2026/5",
+    "summary": "Medieval walls and the Shambles.",
+    "countryCode": "GB"
+  },
+  {
     "id": "phnom-penh",
     "name": "Phnom Penh",
     "region": "Cambodia",
