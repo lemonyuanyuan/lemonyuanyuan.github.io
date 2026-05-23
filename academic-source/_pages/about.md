@@ -8,24 +8,11 @@ redirect_from:
   - /about.html
 ---
 
-<!--
-  卡片手写模板（不用 YAML 时）：
-  1. 删掉下面 Research/Projects 的 {% include float-cards.html ... %}
-  2. 粘贴并修改下面这段，图片路径直接写 images/文件名.png
-
-<div class="float-card">
-  <img src="images/500x300.png" alt="配图说明" class="float-card__image">
-  <span class="float-card__badge">Preprint</span>
-  <h3 class="float-card__title">论文或项目标题</h3>
-  <p class="float-card__authors">Xinyuan Wang, Co-author</p>
-  <p class="float-card__venue"><em>Conference 20XX</em></p>
-  <p class="float-card__description">一句话描述。</p>
-  <div class="float-card__links">
-    <a class="float-card__link" href="#">PDF</a>
-    <a class="float-card__link" href="https://github.com/lemonyuanyuan">Code</a>
-  </div>
-</div>
--->
+{% comment %}
+卡片手写模板（不用 YAML 时）：
+1. 删掉 Research/Projects 下方的 float-cards 引用行
+2. 粘贴 CARD-TEMPLATE.html 里的 HTML，图片路径写 images/文件名.png
+{% endcomment %}
 
 <span class='anchor' id='about-me'></span>
 

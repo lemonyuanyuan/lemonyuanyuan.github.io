@@ -71,6 +71,7 @@ exclude:
   - google_scholar_crawler
   - run_server.sh
   - README.md
+  - CARD-TEMPLATE.html
   - "*.sublime-project"
   - "*.sublime-workspace"
   - .asset-cache
