@@ -1,11 +1,13 @@
 ---
 ---
 
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+
+$site-font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
 
 body {
   background-color: #fff;
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: $site-font-family;
   font-size: 1rem;
   line-height: 1.65;
   color: #222;
@@ -23,7 +25,7 @@ body {
   margin-left: 0;
   margin-right: 0;
   padding-left: 0;
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: $site-font-family;
   font-size: 1rem;
   line-height: 1.65;
 }
@@ -43,7 +45,7 @@ body {
 }
 
 .page__content h1 {
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: $site-font-family;
   font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -122,7 +124,7 @@ $sidebar-profile-width: 175px;
   #main {
     display: grid;
     grid-template-columns: $sidebar-profile-width minmax(0, 1fr);
-    column-gap: 3.5rem;
+    column-gap: 4.5rem;
     align-items: start;
   }
 
@@ -216,8 +218,13 @@ $sidebar-profile-width: 175px;
   height: 175px;
 }
 
+.author__name,
 .author__name--rotate {
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  width: 100%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: $site-font-family;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -226,20 +233,13 @@ $sidebar-profile-width: 175px;
 }
 
 .name-rotate__item {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 100%;
-  text-align: center;
-  font-weight: 700;
+  grid-area: 1 / 1;
+  position: relative;
   opacity: 0;
   transition: opacity 0.8s ease;
   white-space: nowrap;
-}
-
-.name-rotate__item:last-child {
-  font-family: "Noto Serif SC", serif;
+  text-align: center;
+  font-family: $site-font-family;
   font-weight: 700;
 }
 
@@ -248,14 +248,14 @@ $sidebar-profile-width: 175px;
 }
 
 .name-rotate {
-  display: block;
+  display: grid;
+  place-items: center;
   width: 100%;
-  min-height: 1.5em;
+  min-height: 1.8em;
   position: relative;
 }
 
 .name-rotate__item.is-active {
-  position: absolute;
   opacity: 1;
 }
 
@@ -274,7 +274,7 @@ $sidebar-profile-width: 175px;
   background: #fafafa;
   padding: 1.25rem 1.5rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: $site-font-family;
   font-size: 1rem;
   line-height: 1.65;
 }
