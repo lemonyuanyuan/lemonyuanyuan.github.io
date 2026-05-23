@@ -20,7 +20,7 @@
     "image": "images/home/lemon.png",
     "intro": "My favorite dog in this world.",
     "link": null,
-    "size": 100,
+    "size": 200,
     "mobile": true
   },
   {
@@ -28,7 +28,7 @@
     "image": "images/home/hzm.png",
     "intro": "Cutie.",
     "link": null,
-    "size": 100,
+    "size": 200,
     "mobile": true
   },
   {
