@@ -16,21 +16,27 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-Hi, I am **Xinyuan Wang** (王心元). Welcome to my academic homepage.
+# Biography
 
-I am interested in [your research areas — e.g., machine learning, robotics, computer vision]. This page highlights my education, research, and projects. Feel free to reach out via email or GitHub.
+My name is **Xinyuan Wang** (王心元). I am a student/researcher at [Your University](https://example.com) (replace with your department link), working on **machine learning**, **robotics**, and **computer vision**. An overview of my work is on the [Research](#-research) and [Projects](#-projects) sections below.
+
+Previously, I have been interested in [related topic or past lab](https://example.com) with [Advisor Name](https://example.com). I am also building tools and writing about [topics you care about](https://example.com).
+
+Here is my [CV](https://example.com/cv.pdf) (update link when ready). I am also enthusiastic about travel and photography — see my [personal site](https://lemonyuanyuan.github.io) for more.
+
+Contact me: [lemonwxy2017@126.com](mailto:lemonwxy2017@126.com) · [GitHub](https://github.com/lemonyuanyuan) · [Google Scholar](https://scholar.google.com/citations?user=YOUR_GOOGLE_SCHOLAR_ID)
 
 <span class='anchor' id='-educations'></span>
 # Educations
 
-- *Present — TODO*, Degree, University Name.
-- *20XX — 20XX*, Degree, University Name.
+- *Present — TODO*, Degree, [University Name](https://example.com).
+- *20XX — 20XX*, Degree, [University Name](https://example.com).
 
 <span class='anchor' id='-news'></span>
 # News
 
-- *2025.05*: Academic homepage launched at `/portfolio`.
-- *TODO*: Add your latest news here.
+- *2025.05*: Academic homepage launched at [lemonyuanyuan.github.io/portfolio/](https://lemonyuanyuan.github.io/portfolio/).
+- *TODO*: Add your latest news here (paper accepted, internship, etc.).
 
 <span class='anchor' id='-research'></span>
 # Research
