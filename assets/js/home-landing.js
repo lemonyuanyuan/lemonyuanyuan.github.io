@@ -8,6 +8,7 @@
   var SPEED_MAX = 0.05;
   var BURST_DURATION_MS = 900;
   var BURST_SPEED = 1.2;
+  var PORTRAIT_ORIGIN_Y_RATIO = 0.58;
 
   function prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -22,11 +23,12 @@
     return Math.random() > 0.5 ? speed : -speed;
   }
 
-  function FloatEngine(heroEl, floatersContainer, portraitEl, introImgEl, stageEl) {
+  function FloatEngine(heroEl, floatersContainer, portraitEl, introImgEl, footerWrapEl, stageEl) {
     this.heroEl = heroEl;
     this.floatersContainer = floatersContainer;
     this.portraitEl = portraitEl;
     this.introImgEl = introImgEl;
+    this.footerWrapEl = footerWrapEl;
     this.stageEl = stageEl;
     this.items = [];
     this.rafId = null;
@@ -54,7 +56,10 @@
 
     return {
       x: portraitRect.left - heroRect.left + portraitRect.width / 2,
-      y: portraitRect.top - heroRect.top + portraitRect.height / 2,
+      y:
+        portraitRect.top -
+        heroRect.top +
+        portraitRect.height * PORTRAIT_ORIGIN_Y_RATIO,
     };
   };
 
@@ -91,6 +96,16 @@
         top: i.top - heroRect.top - SAFE_ZONE_PADDING,
         right: i.right - heroRect.left + SAFE_ZONE_PADDING,
         bottom: i.bottom - heroRect.top + SAFE_ZONE_PADDING,
+      });
+    }
+
+    if (this.footerWrapEl) {
+      var f = this.footerWrapEl.getBoundingClientRect();
+      zones.push({
+        left: f.left - heroRect.left - SAFE_ZONE_PADDING,
+        top: f.top - heroRect.top - SAFE_ZONE_PADDING,
+        right: f.right - heroRect.left + SAFE_ZONE_PADDING,
+        bottom: f.bottom - heroRect.top + SAFE_ZONE_PADDING,
       });
     }
 
@@ -314,7 +329,6 @@
       item.x += item.vx * damping;
       item.y += item.vy * damping;
       this.clampPosition(item);
-      this.resolveAllZoneCollisions(item);
       this.renderItem(item);
     }
 
@@ -387,13 +401,14 @@
       return Promise.resolve();
     }
 
-    this.setupBurst();
-    this.start();
-
     return new Promise(function (resolve) {
-      setTimeout(function () {
-        resolve();
-      }, BURST_DURATION_MS + 50);
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          self.setupBurst();
+          self.start();
+          setTimeout(resolve, BURST_DURATION_MS + 50);
+        });
+      });
     });
   };
 
@@ -448,6 +463,7 @@
     var floatersContainer = document.querySelector(".hero-landing__floaters");
     var portraitEl = document.querySelector(".hero-landing__portrait");
     var introImgEl = document.querySelector(".hero-landing__intro-img");
+    var footerWrapEl = document.querySelector(".hero-landing__footer-wrap");
     var stageEl = document.querySelector(".hero-landing__stage");
 
     if (!heroEl || !floatersContainer) return;
@@ -465,9 +481,13 @@
             floatersContainer,
             portraitEl,
             introImgEl,
+            footerWrapEl,
             stageEl
           );
-          var pending = [];
+          var pending = [
+            loadImage(portraitEl),
+            introImgEl ? loadImage(introImgEl) : Promise.resolve(),
+          ];
 
           floaters.forEach(function (config, index) {
             if (isMobile && config.mobile === false) return;

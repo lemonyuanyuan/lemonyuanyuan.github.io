@@ -5,8 +5,11 @@
 }
 
 .site-nav-bar .inner {
-  padding-top: 0;
-  padding-bottom: 0;
+  width: 64rem;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 3.5rem;
+  box-sizing: border-box;
 }
 
 .site-nav ul,
@@ -48,6 +51,34 @@
 .site-nav a[aria-current="page"],
 #navbar a[aria-current="page"] {
   color: #2c5282;
+}
+
+@media screen and (max-width: 1680px) {
+  .site-nav-bar .inner {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .site-nav-bar .inner {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  .site-nav-bar .inner {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media screen and (max-width: 736px) {
+  .site-nav-bar .inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
