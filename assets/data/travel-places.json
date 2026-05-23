@@ -1,0 +1,46 @@
+[
+  {
+    "id": "guilin",
+    "name": "Guilin",
+    "region": "Guangxi, China",
+    "lat": 25.2736,
+    "lng": 110.29,
+    "date": "2024/12",
+    "summary": "Karst peaks along the Li River.",
+    "galleryUrl": "album/guilin.html",
+    "thumbnail": "album/guilin/DSC_0167.JPG"
+  },
+  {
+    "id": "guiyang",
+    "name": "Guiyang",
+    "region": "Guizhou, China",
+    "lat": 26.647,
+    "lng": 106.6302,
+    "date": "2025/1",
+    "summary": "Winter streets and mountain air.",
+    "galleryUrl": "album/guizhou.html",
+    "thumbnail": "album/guizhou/DSC_2879-2.jpg"
+  },
+  {
+    "id": "sydney",
+    "name": "Sydney",
+    "region": "Australia",
+    "lat": -33.8688,
+    "lng": 151.2093,
+    "date": "2025/2",
+    "summary": "Harbour light and coastal walks.",
+    "galleryUrl": "album/australia.html",
+    "thumbnail": "album/australia/WechatIMG1455.jpeg"
+  },
+  {
+    "id": "kyoto",
+    "name": "Kyoto",
+    "region": "Japan",
+    "lat": 35.0116,
+    "lng": 135.7681,
+    "date": "2025/5",
+    "summary": "Temples, alleys, and spring evenings.",
+    "galleryUrl": "album/Japan2025.html",
+    "thumbnail": "images/gallery/thumbs/02.jpg"
+  }
+]

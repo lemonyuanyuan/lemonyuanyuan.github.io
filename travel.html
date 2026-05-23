@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel | Xinyuan</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    />
+    <link rel="stylesheet" href="assets/css/travel-map.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
+                    <li><a href="reading.html">Reading</a></li>
+                    <li><a href="travel.html">Travel</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+            <h1>Travel Journal</h1>
+            <p>
+                Places I've walked and stories I've found along the way.
+                Use the map below to see where I've been; photo galleries live under
+                <a href="gallery.html">Gallery</a>.
+            </p>
+
+            <div class="travel-map-section">
+                <h2>Map</h2>
+                <p class="travel-map-hint">
+                    Drag to pan; scroll or pinch to zoom. Click a marker for a short card and a link to that place's gallery.
+                </p>
+                <div id="travel-map" class="travel-map" aria-label="Travel map"></div>
+            </div>
+
+            <ul class="actions stacked" style="margin-top: 2rem;">
+                <li><a href="gallery.html" class="button">View all galleries</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+            <footer>
+                <p>&copy; 2025 Xinyuan</p>
+            </footer>
+        </div>
+    </section>
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
+    <script src="assets/js/travel-map.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
