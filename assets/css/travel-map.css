@@ -43,6 +43,30 @@
   color: #fff;
 }
 
+.travel-map-legend {
+  margin: -0.75rem 0 1rem 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.travel-map-legend[hidden] {
+  display: none;
+}
+
+.travel-map .leaflet-overlay-pane path.travel-country-visited {
+  fill: #2c5282 !important;
+  fill-opacity: 0.72 !important;
+  stroke: #1a365d !important;
+  stroke-width: 1.2px !important;
+}
+
+.travel-map .leaflet-overlay-pane path.travel-country-unvisited {
+  fill: #ece8e3 !important;
+  fill-opacity: 0.55 !important;
+  stroke: #cfc9c2 !important;
+  stroke-width: 0.5px !important;
+}
+
 .travel-map-frame {
   padding: 2rem;
   background: #faf8f4;

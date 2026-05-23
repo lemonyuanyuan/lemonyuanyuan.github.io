@@ -13,11 +13,13 @@
     [-85, -180],
     [85, 180]
   ];
+  var TILE_URL_CITIES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_URL_COUNTRIES = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
 
   var HINT_CITIES =
-    'Drag to pan; scroll or pinch to zoom. Click a marker for a short card and a link to that place\'s gallery.';
+    'By City: drag to pan and zoom. Click a marker for a short card and gallery link.';
   var HINT_COUNTRIES =
-    'Highlighted countries are places I\'ve visited. Click a country to see cities I\'ve been to there.';
+    'By Country: blue countries are places I\'ve visited. Click a country to see cities there.';
 
   var activeMap = null;
   var activeTileLayer = null;
@@ -146,16 +148,18 @@
     if (isVisited) {
       return {
         fillColor: '#2c5282',
-        fillOpacity: 0.55,
+        fillOpacity: 0.72,
         color: '#1a365d',
-        weight: 1
+        weight: 1.2,
+        className: 'travel-country-visited'
       };
     }
     return {
-      fillColor: '#e8e4df',
-      fillOpacity: 0.85,
-      color: '#d4d0cb',
-      weight: 0.6
+      fillColor: '#ece8e3',
+      fillOpacity: 0.55,
+      color: '#cfc9c2',
+      weight: 0.5,
+      className: 'travel-country-unvisited'
     };
   }
 
@@ -230,6 +234,25 @@
     hint.textContent = currentMode === 'countries' ? HINT_COUNTRIES : HINT_CITIES;
   }
 
+  function updateLegend() {
+    var legend = document.querySelector('.travel-map-legend');
+    if (!legend) return;
+    legend.hidden = currentMode !== 'countries';
+  }
+
+  function setTileForMode(mode) {
+    if (!activeTileLayer) return;
+    activeTileLayer.setUrl(mode === 'countries' ? TILE_URL_COUNTRIES : TILE_URL_CITIES);
+  }
+
+  function refreshCountryStyles() {
+    if (!countryLayer) return;
+    countryLayer.eachLayer(function (layerRef) {
+      var visited = layerRef.options.className === 'travel-country-visited';
+      layerRef.setStyle(countryStyle(visited));
+    });
+  }
+
   function updateToolbar() {
     var citiesBtn = document.getElementById('travel-map-mode-cities');
     var countriesBtn = document.getElementById('travel-map-mode-countries');
@@ -268,13 +291,18 @@
     if (mode === 'cities') {
       if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
       if (!activeMap.hasLayer(cityLayer)) activeMap.addLayer(cityLayer);
+      setTileForMode('cities');
     } else {
       if (activeMap.hasLayer(cityLayer)) activeMap.removeLayer(cityLayer);
       if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
+      setTileForMode('countries');
+      refreshCountryStyles();
+      countryLayer.bringToFront();
     }
 
     updateToolbar();
     updateHint();
+    updateLegend();
     fitForMode(activeMap);
     setTimeout(function () {
       updateMinZoomToFill(activeMap, activeTileLayer);
@@ -334,24 +362,26 @@
         }
 
         if (isVisited) {
+          layerRef.options.className = 'travel-country-visited';
           layerRef.bindPopup(buildCountryPopupContent(code, name), {
             maxWidth: 280,
             className: 'travel-leaflet-popup'
           });
           layerRef.on('mouseover', function () {
             layerRef.setStyle({
-              fillOpacity: 0.72,
-              weight: 1.2
+              fillOpacity: 0.85,
+              weight: 1.4
             });
           });
           layerRef.on('mouseout', function () {
             layerRef.setStyle(countryStyle(true));
           });
         } else {
+          layerRef.options.className = 'travel-country-unvisited';
           layerRef.on('mouseover', function () {
             layerRef.setStyle({
-              fillOpacity: 0.95,
-              weight: 0.8
+              fillOpacity: 0.7,
+              weight: 0.7
             });
           });
           layerRef.on('mouseout', function () {
@@ -384,9 +414,7 @@
       worldCopyJump: false
     });
 
-    var tileLayer = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      {
+    var tileLayer = L.tileLayer(TILE_URL_CITIES, {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
@@ -407,6 +435,7 @@
     bindToolbar();
     updateToolbar();
     updateHint();
+    updateLegend();
     fitForMode(map);
 
     setTimeout(function () {
