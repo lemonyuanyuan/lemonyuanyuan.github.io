@@ -2,9 +2,9 @@
   {
     "id": "tennis",
     "image": "images/home/tennis.png",
-    "intro": "The inner game of tennis.",
+    "intro": "The inner game of tennis",
     "link": null,
-    "size": 115,
+    "size": 140,
     "mobile": true
   },
   {
@@ -12,37 +12,37 @@
     "image": "images/home/climbing.png",
     "intro": "Climb on!",
     "link": null,
-    "size": 105,
+    "size": 130,
     "mobile": true
   },
   {
     "id": "Rock",
     "image": "images/home/guitar.png",
-    "intro": "To be a rock but not to roll. Pink Floyd, ",
+    "intro": "Pink Floyd, Oasis, MCR, The Cure, Eagles, and more",
     "link": null,
-    "size": 105,
+    "size": 130,
     "mobile": true
   },
   {
     "id": "lemon",
     "image": "images/home/lemon.png",
-    "intro": "My favorite dog in this world.",
+    "intro": "My favorite one",
     "link": null,
-    "size": 200,
+    "size": 180,
     "mobile": true
   },
   {
     "id": "hzm",
     "image": "images/home/hzm.png",
-    "intro": "Cutie.",
+    "intro": "Cutie",
     "link": null,
-    "size": 200,
+    "size": 180,
     "mobile": true
   },
   {
     "id": "research",
     "image": "images/geek.jpeg",
-    "intro": "Research — 学术主页，论文与项目。",
+    "intro": "Build something meaningful",
     "link": "/portfolio/",
     "size": 108,
     "mobile": true
@@ -50,7 +50,7 @@
   {
     "id": "podcast",
     "image": "images/podcast.jpg",
-    "intro": "废话联翩 — 听我用声音胡思乱想。",
+    "intro": "废话联翩 Fluttering Nonsense",
     "link": "https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd",
     "size": 105,
     "mobile": false

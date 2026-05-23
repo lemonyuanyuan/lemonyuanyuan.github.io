@@ -22,28 +22,11 @@
     return Math.random() > 0.5 ? speed : -speed;
   }
 
-  function initNameRotate() {
-    var container = document.querySelector(".hero-landing .name-rotate");
-    if (!container) return;
-
-    var items = container.querySelectorAll(".name-rotate__item");
-    if (items.length < 2) return;
-
-    var index = 0;
-    var intervalMs = 3500;
-
-    setInterval(function () {
-      items[index].classList.remove("is-active");
-      index = (index + 1) % items.length;
-      items[index].classList.add("is-active");
-    }, intervalMs);
-  }
-
-  function FloatEngine(heroEl, floatersContainer, portraitEl, introWrapEl, stageEl) {
+  function FloatEngine(heroEl, floatersContainer, portraitEl, introImgEl, stageEl) {
     this.heroEl = heroEl;
     this.floatersContainer = floatersContainer;
     this.portraitEl = portraitEl;
-    this.introWrapEl = introWrapEl;
+    this.introImgEl = introImgEl;
     this.stageEl = stageEl;
     this.items = [];
     this.rafId = null;
@@ -75,18 +58,43 @@
     };
   };
 
-  FloatEngine.prototype.getSafeZone = function () {
-    if (!this.introWrapEl) return null;
-
+  FloatEngine.prototype.getBlockedZones = function () {
     var heroRect = this.heroEl.getBoundingClientRect();
-    var introRect = this.introWrapEl.getBoundingClientRect();
+    var zones = [];
 
-    return {
-      left: introRect.left - heroRect.left - SAFE_ZONE_PADDING,
-      top: introRect.top - heroRect.top - SAFE_ZONE_PADDING,
-      right: introRect.right - heroRect.left + SAFE_ZONE_PADDING,
-      bottom: introRect.bottom - heroRect.top + SAFE_ZONE_PADDING,
-    };
+    if (this.portraitEl) {
+      var p = this.portraitEl.getBoundingClientRect();
+      var left = p.left - heroRect.left;
+      var top = p.top - heroRect.top;
+      var w = p.width;
+      var h = p.height;
+
+      zones.push({
+        left: left - SAFE_ZONE_PADDING,
+        top: top + h * (1 / 3) - SAFE_ZONE_PADDING,
+        right: left + w + SAFE_ZONE_PADDING,
+        bottom: top + h + SAFE_ZONE_PADDING,
+      });
+
+      zones.push({
+        left: left + w * (1 / 6) - SAFE_ZONE_PADDING,
+        top: top - SAFE_ZONE_PADDING,
+        right: left + w * (5 / 6) + SAFE_ZONE_PADDING,
+        bottom: top + h + SAFE_ZONE_PADDING,
+      });
+    }
+
+    if (this.introImgEl) {
+      var i = this.introImgEl.getBoundingClientRect();
+      zones.push({
+        left: i.left - heroRect.left - SAFE_ZONE_PADDING,
+        top: i.top - heroRect.top - SAFE_ZONE_PADDING,
+        right: i.right - heroRect.left + SAFE_ZONE_PADDING,
+        bottom: i.bottom - heroRect.top + SAFE_ZONE_PADDING,
+      });
+    }
+
+    return zones;
   };
 
   FloatEngine.prototype.addItem = function (config, wrapper, img, index) {
@@ -127,13 +135,48 @@
     }
   };
 
+  FloatEngine.prototype.resolveAllZoneCollisions = function (item) {
+    var zones = this.getBlockedZones();
+    for (var z = 0; z < zones.length; z++) {
+      this.resolveZoneCollision(item, zones[z]);
+    }
+  };
+
+  FloatEngine.prototype.isPositionValid = function (item, x, y) {
+    var savedX = item.x;
+    var savedY = item.y;
+    item.x = x;
+    item.y = y;
+    var zones = this.getBlockedZones();
+    var valid = true;
+    for (var z = 0; z < zones.length; z++) {
+      if (this.intersectsZone(item, zones[z])) {
+        valid = false;
+        break;
+      }
+    }
+    item.x = savedX;
+    item.y = savedY;
+    return valid;
+  };
+
   FloatEngine.prototype.randomizePosition = function (item) {
     var bounds = this.getBounds();
     var maxX = Math.max(0, bounds.width - item.width);
     var maxY = Math.max(0, bounds.height - item.height);
 
+    for (var attempt = 0; attempt < 80; attempt++) {
+      var x = maxX > 0 ? Math.random() * maxX : 0;
+      var y = maxY > 0 ? Math.random() * maxY : 0;
+      if (this.isPositionValid(item, x, y)) {
+        item.x = x;
+        item.y = y;
+        return;
+      }
+    }
+
     item.x = maxX > 0 ? Math.random() * maxX : 0;
-    item.y = maxY > 0 ? Math.random() * maxY : 0;
+    item.y = 0;
   };
 
   FloatEngine.prototype.clampPosition = function (item) {
@@ -186,7 +229,7 @@
     }
   };
 
-  FloatEngine.prototype.intersectsSafeZone = function (item, zone) {
+  FloatEngine.prototype.intersectsZone = function (item, zone) {
     var itemRight = item.x + item.width;
     var itemBottom = item.y + item.height;
 
@@ -198,7 +241,7 @@
     );
   };
 
-  FloatEngine.prototype.resolveSafeZoneCollision = function (item, zone) {
+  FloatEngine.prototype.resolveZoneCollision = function (item, zone) {
     var itemRight = item.x + item.width;
     var itemBottom = item.y + item.height;
 
@@ -271,6 +314,7 @@
       item.x += item.vx * damping;
       item.y += item.vy * damping;
       this.clampPosition(item);
+      this.resolveAllZoneCollisions(item);
       this.renderItem(item);
     }
 
@@ -290,7 +334,6 @@
     }
 
     var bounds = this.getBounds();
-    var safeZone = this.getSafeZone();
 
     for (var i = 0; i < this.items.length; i++) {
       var item = this.items[i];
@@ -300,10 +343,7 @@
       item.y += item.vy;
 
       this.resolveEdgeCollision(item, bounds);
-
-      if (safeZone) {
-        this.resolveSafeZoneCollision(item, safeZone);
-      }
+      this.resolveAllZoneCollisions(item);
 
       this.renderItem(item);
     }
@@ -407,7 +447,7 @@
     var heroEl = document.querySelector(".hero-landing");
     var floatersContainer = document.querySelector(".hero-landing__floaters");
     var portraitEl = document.querySelector(".hero-landing__portrait");
-    var introWrapEl = document.querySelector(".hero-landing__intro-wrap");
+    var introImgEl = document.querySelector(".hero-landing__intro-img");
     var stageEl = document.querySelector(".hero-landing__stage");
 
     if (!heroEl || !floatersContainer) return;
@@ -424,7 +464,7 @@
             heroEl,
             floatersContainer,
             portraitEl,
-            introWrapEl,
+            introImgEl,
             stageEl
           );
           var pending = [];
@@ -489,12 +529,8 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      initNameRotate();
-      initFloaters();
-    });
+    document.addEventListener("DOMContentLoaded", initFloaters);
   } else {
-    initNameRotate();
     initFloaters();
   }
 })();
