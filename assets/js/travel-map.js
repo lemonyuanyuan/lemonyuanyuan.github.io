@@ -4,24 +4,12 @@
   var MAP_CONTAINER_ID = 'travel-map';
   var PLACES_URL = 'assets/data/travel-places.json';
   var COUNTRIES_URL = 'assets/data/visited-countries.geojson';
-  var MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
-  var LEAFLET_CSS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-  var LEAFLET_JS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  var TILE_URL_RASTER = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
-  var VISITED_FILL_LAYER = 'visited-countries-fill';
-  var VISITED_SOURCE = 'visited-countries';
-  var BOUNDARY_BEFORE_LAYER = 'boundary_country_outline';
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
   var SINGLE_PLACE_ZOOM = 8;
   var FALLBACK_MIN_ZOOM = 2;
   var FIT_BOUNDS_MAX_ZOOM = 5;
-  var MAPLIBRE_LOAD_TIMEOUT_MS = 8000;
-  var WORLD_BOUNDS = [
-    [-180, -85],
-    [180, 85]
-  ];
-  var LEAFLET_MAX_BOUNDS = [
+  var MAP_MAX_BOUNDS = [
     [-85, -180],
     [85, 180]
   ];
@@ -32,26 +20,15 @@
     'By Country: blue fill marks countries I\'ve visited; click a pin or country for cities.';
 
   var activeMap = null;
-  var mapEngine = null;
   var activeTileLayer = null;
   var resizeTimer = null;
-  var loadTimeoutId = null;
-  var setupComplete = false;
-  var fallbackTriggered = false;
-  var toolbarBound = false;
-  var hoveredCountryId = null;
-
-  var cityMarkers = [];
-  var countryMarkers = [];
-  var leafletCityLayer = null;
-  var leafletCountryLayer = null;
-  var leafletCountryPinLayer = null;
-
-  var mapContainer = null;
+  var travelPinIcon = null;
+  var cityLayer = null;
+  var countryLayer = null;
+  var countryPinLayer = null;
   var currentMode = 'cities';
   var allPlaces = [];
   var visitedCountryGeojson = null;
-  var visitedCountryCodes = {};
   var placesByCountry = {};
   var countryCentroids = {};
   var countryNamesByCode = {};
@@ -82,26 +59,23 @@
     );
   }
 
-  function createPinElement() {
-    var wrap = document.createElement('div');
-    wrap.className = 'travel-map-pin-wrap';
-    wrap.innerHTML =
-      '<span class="travel-map-pin" aria-hidden="true">' +
-      '<svg viewBox="0 0 24 36" width="24" height="36" xmlns="http://www.w3.org/2000/svg">' +
-      '<path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="currentColor"/>' +
-      '<circle cx="12" cy="12" r="4" fill="#fff"/>' +
-      '</svg></span>';
-    return wrap;
-  }
+  function createTravelPinIcon() {
+    if (travelPinIcon) return travelPinIcon;
 
-  function createLeafletPinIcon() {
-    return L.divIcon({
+    travelPinIcon = L.divIcon({
       className: 'travel-map-pin-wrap',
-      html: createPinElement().innerHTML,
+      html:
+        '<span class="travel-map-pin" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 36" width="24" height="36" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="currentColor"/>' +
+        '<circle cx="12" cy="12" r="4" fill="#fff"/>' +
+        '</svg></span>',
       iconSize: [24, 36],
       iconAnchor: [12, 36],
       popupAnchor: [0, -36]
     });
+
+    return travelPinIcon;
   }
 
   function buildPlacePopupContent(place) {
@@ -171,16 +145,20 @@
     return props.ISO_A2 || props.iso_a2 || '';
   }
 
+  function countryStyle() {
+    return {
+      fillColor: '#2c5282',
+      fillOpacity: 0.45,
+      color: 'transparent',
+      weight: 0
+    };
+  }
+
   function extendBounds(bounds, lng, lat) {
     if (!bounds) {
-      return { minLng: lng, maxLng: lng, minLat: lat, maxLat: lat };
+      return L.latLngBounds([lat, lng], [lat, lng]);
     }
-    return {
-      minLng: Math.min(bounds.minLng, lng),
-      maxLng: Math.max(bounds.maxLng, lng),
-      minLat: Math.min(bounds.minLat, lat),
-      maxLat: Math.max(bounds.maxLat, lat)
-    };
+    return bounds.extend([lat, lng]);
   }
 
   function boundsFromGeometry(geometry, bounds) {
@@ -199,22 +177,6 @@
     return walkCoords(geometry.coordinates);
   }
 
-  function boundsToLngLatBounds(bounds) {
-    if (!bounds) return null;
-    return [
-      [bounds.minLng, bounds.minLat],
-      [bounds.maxLng, bounds.maxLat]
-    ];
-  }
-
-  function boundsToLeafletBounds(bounds) {
-    if (!bounds) return null;
-    return L.latLngBounds(
-      [bounds.minLat, bounds.minLng],
-      [bounds.maxLat, bounds.maxLng]
-    );
-  }
-
   function indexCountryNames(geojson) {
     countryNamesByCode = {};
     if (!geojson || !Array.isArray(geojson.features)) return;
@@ -228,7 +190,6 @@
   }
 
   function indexPlaces(places) {
-    visitedCountryCodes = {};
     placesByCountry = {};
     countryCentroids = {};
     cityBounds = null;
@@ -237,7 +198,6 @@
       cityBounds = extendBounds(cityBounds, place.lng, place.lat);
 
       if (!place.countryCode) return;
-      visitedCountryCodes[place.countryCode] = true;
       if (!placesByCountry[place.countryCode]) {
         placesByCountry[place.countryCode] = [];
       }
@@ -273,33 +233,8 @@
     });
   }
 
-  function mapIsReady(map) {
-    if (!map) return false;
-    if (mapEngine === 'maplibre') {
-      return typeof map.loaded === 'function' && map.loaded();
-    }
-    return true;
-  }
-
-  function safeResize(map) {
-    if (!map || !mapIsReady(map)) return;
-    if (mapEngine === 'maplibre') {
-      map.resize();
-    } else if (mapEngine === 'leaflet') {
-      map.invalidateSize();
-    }
-  }
-
-  function getFillMinZoomMapLibre(map) {
-    var camera = map.cameraForBounds(WORLD_BOUNDS, { padding: 20 });
-    if (!camera || typeof camera.zoom !== 'number' || isNaN(camera.zoom)) {
-      return FALLBACK_MIN_ZOOM;
-    }
-    return Math.max(FALLBACK_MIN_ZOOM, camera.zoom);
-  }
-
-  function getFillMinZoomLeaflet(map) {
-    var bounds = L.latLngBounds(LEAFLET_MAX_BOUNDS);
+  function getFillMinZoom(map) {
+    var bounds = L.latLngBounds(MAP_MAX_BOUNDS);
     var zoom = map.getBoundsZoom(bounds, false);
     if (zoom === Infinity || zoom === -Infinity || isNaN(zoom)) {
       return FALLBACK_MIN_ZOOM;
@@ -308,13 +243,10 @@
   }
 
   function updateMinZoomToFill(map) {
-    if (!mapIsReady(map)) return;
-
-    var fillZoom =
-      mapEngine === 'leaflet' ? getFillMinZoomLeaflet(map) : getFillMinZoomMapLibre(map);
-
+    map.invalidateSize();
+    var fillZoom = getFillMinZoom(map);
     map.setMinZoom(fillZoom);
-    if (mapEngine === 'leaflet' && activeTileLayer) {
+    if (activeTileLayer) {
       activeTileLayer.setMinZoom(fillZoom);
     }
     if (map.getZoom() < fillZoom) {
@@ -328,44 +260,22 @@
     }
   }
 
-  function onWindowLoadResize() {
-    if (activeMap) {
-      safeResize(activeMap);
-      if (setupComplete) {
-        updateMinZoomToFill(activeMap);
-      }
-    }
-  }
-
-  function bindMapResizeHandlers(map) {
+  function bindMapResizeHandlers(map, tileLayer) {
     activeMap = map;
+    activeTileLayer = tileLayer;
 
-    if (mapEngine === 'maplibre') {
-      map.on('zoomend', function () {
-        enforceMinZoom(map);
-      });
-    } else {
-      map.on('zoomend', function () {
-        enforceMinZoom(map);
-      });
-    }
+    map.on('zoomend', function () {
+      enforceMinZoom(map);
+    });
 
     window.addEventListener('resize', onWindowResize);
-    if (document.readyState === 'complete') {
-      setTimeout(onWindowLoadResize, 150);
-    } else {
-      window.addEventListener('load', onWindowLoadResize);
-    }
   }
 
   function onWindowResize() {
     if (!activeMap) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
-      safeResize(activeMap);
-      if (setupComplete) {
-        updateMinZoomToFill(activeMap);
-      }
+      updateMinZoomToFill(activeMap);
     }, 150);
   }
 
@@ -394,10 +304,59 @@
     }
   }
 
-  function bindToolbar() {
-    if (toolbarBound) return;
-    toolbarBound = true;
+  function showCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
+    if (!activeMap.hasLayer(countryPinLayer)) activeMap.addLayer(countryPinLayer);
+    countryPinLayer.bringToFront();
+  }
 
+  function hideCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (activeMap.hasLayer(countryPinLayer)) activeMap.removeLayer(countryPinLayer);
+    if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
+  }
+
+  function fitForMode(map) {
+    if (currentMode === 'cities') {
+      if (allPlaces.length === 1) {
+        map.setView([allPlaces[0].lat, allPlaces[0].lng], SINGLE_PLACE_ZOOM);
+      } else if (cityBounds && cityBounds.isValid()) {
+        map.fitBounds(cityBounds, { padding: [40, 40], maxZoom: FIT_BOUNDS_MAX_ZOOM });
+      }
+    } else if (countryBounds && countryBounds.isValid()) {
+      map.fitBounds(countryBounds, { padding: [40, 40], maxZoom: FIT_BOUNDS_MAX_ZOOM });
+    } else {
+      map.fitBounds(L.latLngBounds(MAP_MAX_BOUNDS), { padding: [20, 20] });
+    }
+    enforceMinZoom(map);
+  }
+
+  function setMode(mode) {
+    if (!activeMap || !cityLayer || !countryLayer || !countryPinLayer) return;
+    if (mode !== 'cities' && mode !== 'countries') return;
+    if (currentMode === mode) return;
+
+    currentMode = mode;
+
+    if (mode === 'cities') {
+      hideCountryLayers();
+      if (!activeMap.hasLayer(cityLayer)) activeMap.addLayer(cityLayer);
+    } else {
+      if (activeMap.hasLayer(cityLayer)) activeMap.removeLayer(cityLayer);
+      showCountryLayers();
+    }
+
+    updateToolbar();
+    updateHint();
+    updateLegend();
+    fitForMode(activeMap);
+    setTimeout(function () {
+      updateMinZoomToFill(activeMap);
+    }, 100);
+  }
+
+  function bindToolbar() {
     var citiesBtn = document.getElementById('travel-map-mode-cities');
     var countriesBtn = document.getElementById('travel-map-mode-countries');
     if (citiesBtn) {
@@ -412,406 +371,9 @@
     }
   }
 
-  function setMarkerVisibility(markers, visible) {
-    markers.forEach(function (marker) {
-      if (mapEngine === 'maplibre') {
-        var el = marker.getElement();
-        if (el) el.style.display = visible ? '' : 'none';
-      } else if (marker._icon) {
-        marker._icon.style.display = visible ? '' : 'none';
-      }
-    });
-  }
-
-  function setFillVisibilityMapLibre(map, visible) {
-    if (!map.getLayer(VISITED_FILL_LAYER)) return;
-    map.setLayoutProperty(VISITED_FILL_LAYER, 'visibility', visible ? 'visible' : 'none');
-  }
-
-  function showCountryLayersLeaflet(map) {
-    if (leafletCountryLayer && !map.hasLayer(leafletCountryLayer)) {
-      map.addLayer(leafletCountryLayer);
-    }
-    if (leafletCountryPinLayer && !map.hasLayer(leafletCountryPinLayer)) {
-      map.addLayer(leafletCountryPinLayer);
-    }
-  }
-
-  function hideCountryLayersLeaflet(map) {
-    if (leafletCountryPinLayer && map.hasLayer(leafletCountryPinLayer)) {
-      map.removeLayer(leafletCountryPinLayer);
-    }
-    if (leafletCountryLayer && map.hasLayer(leafletCountryLayer)) {
-      map.removeLayer(leafletCountryLayer);
-    }
-  }
-
-  function fitForMode(map) {
-    if (currentMode === 'cities') {
-      if (allPlaces.length === 1) {
-        if (mapEngine === 'leaflet') {
-          map.setView([allPlaces[0].lat, allPlaces[0].lng], SINGLE_PLACE_ZOOM);
-        } else {
-          map.flyTo({
-            center: [allPlaces[0].lng, allPlaces[0].lat],
-            zoom: SINGLE_PLACE_ZOOM,
-            duration: 0
-          });
-        }
-      } else if (mapEngine === 'leaflet') {
-        var leafletCity = boundsToLeafletBounds(cityBounds);
-        if (leafletCity && leafletCity.isValid()) {
-          map.fitBounds(leafletCity, { padding: [40, 40], maxZoom: FIT_BOUNDS_MAX_ZOOM });
-        }
-      } else {
-        var bounds = boundsToLngLatBounds(cityBounds);
-        if (bounds) {
-          map.fitBounds(bounds, { padding: 40, maxZoom: FIT_BOUNDS_MAX_ZOOM, duration: 0 });
-        }
-      }
-    } else if (mapEngine === 'leaflet') {
-      var leafletCountry = boundsToLeafletBounds(countryBounds);
-      if (leafletCountry && leafletCountry.isValid()) {
-        map.fitBounds(leafletCountry, { padding: [40, 40], maxZoom: FIT_BOUNDS_MAX_ZOOM });
-      } else {
-        map.fitBounds(L.latLngBounds(LEAFLET_MAX_BOUNDS), { padding: [20, 20] });
-      }
-    } else {
-      var countryLngLatBounds = boundsToLngLatBounds(countryBounds);
-      if (countryLngLatBounds) {
-        map.fitBounds(countryLngLatBounds, { padding: 40, maxZoom: FIT_BOUNDS_MAX_ZOOM, duration: 0 });
-      } else {
-        map.fitBounds(WORLD_BOUNDS, { padding: 20, duration: 0 });
-      }
-    }
-    enforceMinZoom(map);
-  }
-
-  function applyModeVisibility(mode) {
-    if (mapEngine === 'maplibre') {
-      if (mode === 'cities') {
-        setFillVisibilityMapLibre(activeMap, false);
-        setMarkerVisibility(cityMarkers, true);
-        setMarkerVisibility(countryMarkers, false);
-      } else {
-        setFillVisibilityMapLibre(activeMap, true);
-        setMarkerVisibility(cityMarkers, false);
-        setMarkerVisibility(countryMarkers, true);
-      }
-    } else {
-      if (mode === 'cities') {
-        hideCountryLayersLeaflet(activeMap);
-        if (leafletCityLayer && !activeMap.hasLayer(leafletCityLayer)) {
-          activeMap.addLayer(leafletCityLayer);
-        }
-      } else {
-        if (leafletCityLayer && activeMap.hasLayer(leafletCityLayer)) {
-          activeMap.removeLayer(leafletCityLayer);
-        }
-        showCountryLayersLeaflet(activeMap);
-      }
-    }
-  }
-
-  function setMode(mode) {
-    if (!activeMap || !setupComplete) return;
-    if (mode !== 'cities' && mode !== 'countries') return;
-    if (currentMode === mode) return;
-
-    currentMode = mode;
-    applyModeVisibility(mode);
-
-    updateToolbar();
-    updateHint();
-    updateLegend();
-    fitForMode(activeMap);
-    setTimeout(function () {
-      safeResize(activeMap);
-      updateMinZoomToFill(activeMap);
-    }, 100);
-  }
-
-  function clearMapLibreLoadTimeout() {
-    if (loadTimeoutId !== null) {
-      clearTimeout(loadTimeoutId);
-      loadTimeoutId = null;
-    }
-  }
-
-  function destroyActiveMap() {
-    clearMapLibreLoadTimeout();
-    cityMarkers = [];
-    countryMarkers = [];
-    leafletCityLayer = null;
-    leafletCountryLayer = null;
-    leafletCountryPinLayer = null;
-    setupComplete = false;
-    hoveredCountryId = null;
-
-    if (activeMap) {
-      if (mapEngine === 'maplibre' && typeof activeMap.remove === 'function') {
-        activeMap.remove();
-      } else if (mapEngine === 'leaflet' && typeof activeMap.remove === 'function') {
-        activeMap.remove();
-      }
-      activeMap = null;
-    }
-    mapEngine = null;
-    activeTileLayer = null;
-  }
-
-  function loadStylesheet(href) {
-    return new Promise(function (resolve, reject) {
-      if (document.querySelector('link[href="' + href + '"]')) {
-        resolve();
-        return;
-      }
-      var link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = href;
-      link.crossOrigin = '';
-      link.onload = function () {
-        resolve();
-      };
-      link.onerror = reject;
-      document.head.appendChild(link);
-    });
-  }
-
-  function loadScript(src) {
-    return new Promise(function (resolve, reject) {
-      if (document.querySelector('script[src="' + src + '"]')) {
-        resolve();
-        return;
-      }
-      var script = document.createElement('script');
-      script.src = src;
-      script.crossOrigin = '';
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
-
-  function ensureLeafletLoaded() {
-    return loadStylesheet(LEAFLET_CSS).then(function () {
-      return loadScript(LEAFLET_JS);
-    });
-  }
-
-  /* --- MapLibre --- */
-
-  function createMapLibrePopup(html) {
-    return new maplibregl.Popup({
-      maxWidth: '280px',
-      className: 'travel-map-popup',
-      closeButton: true,
-      offset: 25
-    }).setHTML(html);
-  }
-
-  function createMapLibreMarker(lng, lat, html) {
-    return new maplibregl.Marker({ element: createPinElement(), anchor: 'bottom' })
-      .setLngLat([lng, lat])
-      .setPopup(createMapLibrePopup(html));
-  }
-
-  function clearHoverState(map) {
-    if (hoveredCountryId === null) return;
-    map.setFeatureState({ source: VISITED_SOURCE, id: hoveredCountryId }, { hover: false });
-    hoveredCountryId = null;
-  }
-
-  function bindCountryFillInteractions(map) {
-    map.on('click', VISITED_FILL_LAYER, function (event) {
-      if (!event.features || !event.features.length) return;
-      var feature = event.features[0];
-      var code = getCountryCodeFromFeature(feature);
-      var name = (feature.properties && feature.properties.name) || countryNamesByCode[code] || code;
-
-      createMapLibrePopup(buildCountryPopupContent(code, name))
-        .setLngLat(event.lngLat)
-        .addTo(map);
-    });
-
-    map.on('mousemove', VISITED_FILL_LAYER, function (event) {
-      map.getCanvas().style.cursor = 'pointer';
-      if (!event.features || !event.features.length) return;
-
-      var id = event.features[0].id;
-      if (id === undefined || id === null) return;
-      if (hoveredCountryId === id) return;
-
-      clearHoverState(map);
-      hoveredCountryId = id;
-      map.setFeatureState({ source: VISITED_SOURCE, id: id }, { hover: true });
-    });
-
-    map.on('mouseleave', VISITED_FILL_LAYER, function () {
-      map.getCanvas().style.cursor = '';
-      clearHoverState(map);
-    });
-  }
-
-  function addVisitedCountryLayerMapLibre(map) {
-    if (map.getSource(VISITED_SOURCE)) return;
-
-    map.addSource(VISITED_SOURCE, {
-      type: 'geojson',
-      data: visitedCountryGeojson,
-      promoteId: 'ISO_A2'
-    });
-
-    var beforeLayer = map.getLayer(BOUNDARY_BEFORE_LAYER) ? BOUNDARY_BEFORE_LAYER : undefined;
-
-    map.addLayer(
-      {
-        id: VISITED_FILL_LAYER,
-        type: 'fill',
-        source: VISITED_SOURCE,
-        layout: { visibility: 'none' },
-        paint: {
-          'fill-color': '#2c5282',
-          'fill-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            0.58,
-            0.45
-          ]
-        }
-      },
-      beforeLayer
-    );
-  }
-
-  function buildMapLibreMarkers(map, places) {
-    cityMarkers = [];
-    places.forEach(function (place) {
-      var marker = createMapLibreMarker(place.lng, place.lat, buildPlacePopupContent(place));
-      marker.addTo(map);
-      cityMarkers.push(marker);
-    });
-
-    countryMarkers = [];
-    Object.keys(countryCentroids).forEach(function (code) {
-      var centroid = countryCentroids[code];
-      var marker = createMapLibreMarker(
-        centroid.lng,
-        centroid.lat,
-        buildCountryPopupContent(code, centroid.name)
-      );
-      marker.addTo(map);
-      marker.getElement().style.display = 'none';
-      countryMarkers.push(marker);
-    });
-  }
-
-  function finishMapSetup(map) {
-    setupComplete = true;
-    currentMode = 'cities';
-    bindToolbar();
-    updateToolbar();
-    updateHint();
-    updateLegend();
-    applyModeVisibility('cities');
-    fitForMode(map);
-    safeResize(map);
-    updateMinZoomToFill(map);
-  }
-
-  function setupMapLibreLayers(map, places) {
-    try {
-      addVisitedCountryLayerMapLibre(map);
-      bindCountryFillInteractions(map);
-      buildMapLibreMarkers(map, places);
-      finishMapSetup(map);
-    } catch (err) {
-      console.error('MapLibre layer setup failed:', err);
-      triggerLeafletFallback(places, 'Could not add map layers.');
-    }
-  }
-
-  function triggerLeafletFallback(places, reason) {
-    if (fallbackTriggered) return;
-    fallbackTriggered = true;
-    clearMapLibreLoadTimeout();
-    console.warn('Switching to Leaflet fallback:', reason);
-
-    destroyActiveMap();
-    if (!mapContainer) return;
-
-    initLeafletFallback(mapContainer, places);
-  }
-
-  function initMapLibre(container, places, geojson) {
-    if (typeof maplibregl === 'undefined') {
-      triggerLeafletFallback(places, 'MapLibre failed to load');
-      return;
-    }
-
-    mapContainer = container;
-    visitedCountryGeojson = geojson;
-    indexCountryNames(geojson);
-    allPlaces = places;
-    indexPlaces(places);
-    computeCountryBounds(geojson);
-    container.innerHTML = '';
-    fallbackTriggered = false;
-    setupComplete = false;
-
-    var map = new maplibregl.Map({
-      container: container,
-      style: MAP_STYLE,
-      center: [0, 20],
-      zoom: FALLBACK_MIN_ZOOM,
-      minZoom: FALLBACK_MIN_ZOOM,
-      maxZoom: 18,
-      maxBounds: WORLD_BOUNDS,
-      renderWorldCopies: false,
-      attributionControl: true
-    });
-
-    mapEngine = 'maplibre';
-    activeMap = map;
-
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
-
-    map.on('error', function (event) {
-      console.error('MapLibre error:', event && event.error ? event.error : event);
-      if (!setupComplete) {
-        triggerLeafletFallback(places, 'Vector map failed to load');
-      }
-    });
-
-    loadTimeoutId = setTimeout(function () {
-      if (!setupComplete && !fallbackTriggered) {
-        triggerLeafletFallback(places, 'Map took too long to load');
-      }
-    }, MAPLIBRE_LOAD_TIMEOUT_MS);
-
-    map.once('idle', function () {
-      if (setupComplete || fallbackTriggered) return;
-      clearMapLibreLoadTimeout();
-      setupMapLibreLayers(map, places);
-    });
-
-    bindMapResizeHandlers(map);
-  }
-
-  /* --- Leaflet fallback --- */
-
-  function countryStyleLeaflet() {
-    return {
-      fillColor: '#2c5282',
-      fillOpacity: 0.45,
-      color: 'transparent',
-      weight: 0
-    };
-  }
-
-  function buildLeafletCityLayer(places) {
+  function buildCityLayer(places) {
     var group = L.layerGroup();
-    var pinIcon = createLeafletPinIcon();
+    var pinIcon = createTravelPinIcon();
 
     places.forEach(function (place) {
       var marker = L.marker([place.lat, place.lng], { icon: pinIcon });
@@ -825,12 +387,13 @@
     return group;
   }
 
-  function buildLeafletCountryLayer(geojson) {
+  function buildCountryLayer(geojson) {
     return L.geoJSON(geojson, {
-      style: countryStyleLeaflet,
+      style: countryStyle,
       onEachFeature: function (feature, layer) {
         var code = getCountryCodeFromFeature(feature);
         var name = (feature.properties && feature.properties.name) || countryNamesByCode[code] || code;
+
         layer.bindPopup(buildCountryPopupContent(code, name), {
           maxWidth: 280,
           className: 'travel-map-popup'
@@ -839,15 +402,15 @@
           layer.setStyle({ fillOpacity: 0.58 });
         });
         layer.on('mouseout', function () {
-          layer.setStyle(countryStyleLeaflet());
+          layer.setStyle(countryStyle());
         });
       }
     });
   }
 
-  function buildLeafletCountryPinLayer() {
+  function buildCountryPinLayer() {
     var group = L.layerGroup();
-    var pinIcon = createLeafletPinIcon();
+    var pinIcon = createTravelPinIcon();
 
     Object.keys(countryCentroids).forEach(function (code) {
       var centroid = countryCentroids[code];
@@ -862,69 +425,73 @@
     return group;
   }
 
-  function initLeafletFallback(container, places) {
-    ensureLeafletLoaded()
-      .then(function () {
-        if (typeof L === 'undefined') {
-          showMessage(container, 'Map library failed to load. Please refresh the page.');
-          return;
-        }
-
-        container.innerHTML = '';
-
-        var map = L.map(container, {
-          scrollWheelZoom: true,
-          zoomControl: true,
-          minZoom: FALLBACK_MIN_ZOOM,
-          maxBounds: LEAFLET_MAX_BOUNDS,
-          maxBoundsViscosity: 1.0,
-          worldCopyJump: false
-        });
-
-        mapEngine = 'leaflet';
-        activeMap = map;
-
-        activeTileLayer = L.tileLayer(TILE_URL_RASTER, {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: 'abcd',
-          minZoom: FALLBACK_MIN_ZOOM,
-          maxZoom: 19,
-          noWrap: true
-        });
-        activeTileLayer.addTo(map);
-
-        leafletCityLayer = buildLeafletCityLayer(places);
-        leafletCountryLayer = buildLeafletCountryLayer(visitedCountryGeojson);
-        leafletCountryPinLayer = buildLeafletCountryPinLayer();
-
-        map.addLayer(leafletCityLayer);
-
-        bindMapResizeHandlers(map);
-
-        map.whenReady(function () {
-          finishMapSetup(map);
-        });
-      })
-      .catch(function (err) {
-        console.error('Leaflet fallback failed:', err);
-        showMessage(container, 'Could not load the travel map. Please refresh the page.');
-      });
+  function finishSetup(map) {
+    currentMode = 'cities';
+    bindToolbar();
+    updateToolbar();
+    updateHint();
+    updateLegend();
+    fitForMode(map);
+    updateMinZoomToFill(map);
   }
 
-  function initMap(container, places, geojson) {
-    mapContainer = container;
+  function initLeafletMap(container, places, geojson) {
+    if (typeof L === 'undefined') {
+      showMessage(container, 'Map library failed to load. Please refresh the page.');
+      return;
+    }
 
-    if (typeof maplibregl !== 'undefined') {
-      initMapLibre(container, places, geojson);
+    visitedCountryGeojson = geojson;
+    indexCountryNames(geojson);
+    allPlaces = places;
+    indexPlaces(places);
+    computeCountryBounds(geojson);
+    container.innerHTML = '';
+
+    var map = L.map(container, {
+      scrollWheelZoom: true,
+      zoomControl: true,
+      minZoom: FALLBACK_MIN_ZOOM,
+      maxBounds: MAP_MAX_BOUNDS,
+      maxBoundsViscosity: 1.0,
+      worldCopyJump: false
+    });
+
+    var tileLayer = L.tileLayer(TILE_URL, {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      minZoom: FALLBACK_MIN_ZOOM,
+      maxZoom: 19,
+      noWrap: true
+    });
+    tileLayer.addTo(map);
+
+    cityLayer = buildCityLayer(places);
+    countryLayer = buildCountryLayer(geojson);
+    countryPinLayer = buildCountryPinLayer();
+
+    map.addLayer(cityLayer);
+
+    bindMapResizeHandlers(map, tileLayer);
+
+    map.whenReady(function () {
+      map.invalidateSize();
+      finishSetup(map);
+    });
+  }
+
+  function startMap(container, places, geojson) {
+    function run() {
+      requestAnimationFrame(function () {
+        initLeafletMap(container, places, geojson);
+      });
+    }
+
+    if (document.readyState === 'complete') {
+      run();
     } else {
-      fallbackTriggered = true;
-      visitedCountryGeojson = geojson;
-      indexCountryNames(geojson);
-      allPlaces = places;
-      indexPlaces(places);
-      computeCountryBounds(geojson);
-      initLeafletFallback(container, places);
+      window.addEventListener('load', run, { once: true });
     }
   }
 
@@ -963,7 +530,7 @@
           return;
         }
 
-        initMap(container, places, geojson);
+        startMap(container, places, geojson);
       })
       .catch(function (err) {
         console.error('Travel map data error:', err);
