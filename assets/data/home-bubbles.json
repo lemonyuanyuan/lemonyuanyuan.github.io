@@ -16,6 +16,14 @@
     "mobile": true
   },
   {
+    "id": "Rock",
+    "image": "images/home/guitar.png",
+    "intro": "To be a rock but not to roll. Pink Floyd, ",
+    "link": null,
+    "size": 105,
+    "mobile": true
+  },
+  {
     "id": "lemon",
     "image": "images/home/lemon.png",
     "intro": "My favorite dog in this world.",
