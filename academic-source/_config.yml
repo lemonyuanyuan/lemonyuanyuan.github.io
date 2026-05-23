@@ -25,9 +25,11 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 author:
   name             : "Xinyuan Wang"
   avatar           : "images/avatar.jpg"
-  bio              : "Researcher & Explorer"
+  bio              : "Ph.D. Student"
   location         : "China"
-  employer         :
+  employer         : "Your University"
+  employer_url     : "https://example.com"
+  cv               : "https://example.com/cv.pdf"
   pubmed           : 
   googlescholar    : "https://scholar.google.com/citations?user=YOUR_GOOGLE_SCHOLAR_ID"
   email            : "lemonwxy2017@126.com"

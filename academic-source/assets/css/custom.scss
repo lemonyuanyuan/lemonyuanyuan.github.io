@@ -61,16 +61,94 @@ body {
 @media (min-width: 925px) {
   .page {
     margin-left: 0 !important;
-    padding-left: 0 !important;
+    padding-left: 1.75rem !important;
+  }
+
+  .page__content {
+    padding-left: 0.5rem;
   }
 
   .sidebar {
     padding-right: 1rem;
   }
+
+  .profile_box {
+    text-align: center;
+    display: block;
+  }
+
+  .author__content {
+    text-align: center;
+  }
+
+  .author__avatar {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .name-rotate {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .author__urls {
+    display: none !important;
+  }
+
+  .author__urls_sm {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0 0;
+    font-size: 1.5rem;
+
+    a {
+      color: #2484c6;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .author__employer a {
+    color: #2484c6;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .profile_box {
   padding: 0.5rem 0 1rem;
+}
+
+.author__employer {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.author__employer a {
+  color: #2484c6;
+  text-decoration: none;
+}
+
+.author__employer a:hover {
+  text-decoration: underline;
+}
+
+.author__urls_sm .author__cv-link {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
 }
 
 .author__avatar img {

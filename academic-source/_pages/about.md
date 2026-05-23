@@ -22,9 +22,7 @@ My name is **Xinyuan Wang** (王心元). I am a student/researcher at [Your Univ
 
 Previously, I have been interested in [related topic or past lab](https://example.com) with [Advisor Name](https://example.com). I am also building tools and writing about [topics you care about](https://example.com).
 
-Here is my [CV](https://example.com/cv.pdf) (update link when ready). I am also enthusiastic about travel and photography — see my [personal site](https://lemonyuanyuan.github.io) for more.
-
-Contact me: [lemonwxy2017@126.com](mailto:lemonwxy2017@126.com) · [GitHub](https://github.com/lemonyuanyuan) · [Google Scholar](https://scholar.google.com/citations?user=YOUR_GOOGLE_SCHOLAR_ID)
+I am also enthusiastic about travel and photography — see my [personal site](https://lemonyuanyuan.github.io) for more.
 
 <span class='anchor' id='-educations'></span>
 # Educations
