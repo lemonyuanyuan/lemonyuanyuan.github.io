@@ -4,8 +4,8 @@
   var FLOATERS_URL = "assets/data/home-bubbles.json";
   var MOBILE_BREAKPOINT = 768;
   var SAFE_ZONE_PADDING = 24;
-  var SPEED_MIN = 0.4;
-  var SPEED_MAX = 0.8;
+  var SPEED_MIN = 0.15;
+  var SPEED_MAX = 0.35;
 
   function prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;

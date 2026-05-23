@@ -4,7 +4,7 @@
     "image": "images/home/tennis.png",
     "intro": "The inner game of tennis.",
     "link": null,
-    "size": 80,
+    "size": 115,
     "mobile": true
   },
   {
@@ -12,7 +12,7 @@
     "image": "images/home/climbing.png",
     "intro": "Climb on!",
     "link": null,
-    "size": 72,
+    "size": 105,
     "mobile": true
   },
   {
@@ -20,7 +20,7 @@
     "image": "images/home/lemon.png",
     "intro": "My favorite dog in this world.",
     "link": null,
-    "size": 68,
+    "size": 100,
     "mobile": true
   },
   {
@@ -28,7 +28,7 @@
     "image": "images/home/hzm.png",
     "intro": "Cutie.",
     "link": null,
-    "size": 68,
+    "size": 100,
     "mobile": true
   },
   {
@@ -36,7 +36,7 @@
     "image": "images/geek.jpeg",
     "intro": "Research — 学术主页，论文与项目。",
     "link": "/portfolio/",
-    "size": 76,
+    "size": 108,
     "mobile": true
   },
   {
@@ -44,7 +44,7 @@
     "image": "images/podcast.jpg",
     "intro": "废话联翩 — 听我用声音胡思乱想。",
     "link": "https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd",
-    "size": 70,
+    "size": 105,
     "mobile": false
   },
   {
@@ -52,7 +52,7 @@
     "image": "images/reading.jpeg",
     "intro": "Reading — 读书笔记与思考。",
     "link": "reading.html",
-    "size": 74,
+    "size": 108,
     "mobile": true
   },
   {
@@ -60,7 +60,7 @@
     "image": "images/travel.JPG",
     "intro": "Travel — 在路上留下的足迹。",
     "link": "travel.html",
-    "size": 66,
+    "size": 100,
     "mobile": true
   },
   {
@@ -68,7 +68,7 @@
     "image": "images/nikon.jpeg",
     "intro": "Gallery — 透过镜头看世界。",
     "link": "gallery.html",
-    "size": 70,
+    "size": 105,
     "mobile": false
   }
 ]
