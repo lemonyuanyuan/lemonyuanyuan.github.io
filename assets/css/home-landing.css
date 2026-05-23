@@ -13,7 +13,7 @@
 .hero-landing__floaters {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -30,6 +30,13 @@
   text-align: center;
   max-width: 42rem;
   padding: 2rem 1.5rem 3rem;
+  pointer-events: none;
+}
+
+.hero-landing__center a,
+.hero-landing__center button,
+.hero-landing__center .actions {
+  pointer-events: auto;
 }
 
 .hero-landing__portrait {
@@ -94,6 +101,7 @@
   width: var(--floater-size, 72px);
   height: auto;
   transition: transform 0.2s ease;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
 }
 
 .hero-floater__tooltip {

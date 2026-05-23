@@ -68,7 +68,7 @@
     };
   };
 
-  FloatEngine.prototype.addItem = function (config, wrapper, img) {
+  FloatEngine.prototype.addItem = function (config, wrapper, img, index) {
     var isMobile = window.innerWidth < MOBILE_BREAKPOINT;
     var displayWidth = config.size;
     if (isMobile) {
@@ -96,18 +96,53 @@
     };
 
     this.items.push(item);
-    this.randomizePosition(item);
+    this.randomizePosition(item, index);
     this.renderItem(item);
     this.bindHover(item);
   };
 
-  FloatEngine.prototype.randomizePosition = function (item) {
+  FloatEngine.prototype.placeOutsideSafeZone = function (item, index) {
+    var bounds = this.getBounds();
+    var safeZone = this.getSafeZone();
+    var margin = 20;
+    var slots = [
+      { x: margin, y: margin },
+      { x: bounds.width - item.width - margin, y: margin },
+      { x: margin, y: bounds.height - item.height - margin },
+      {
+        x: bounds.width - item.width - margin,
+        y: bounds.height - item.height - margin,
+      },
+      { x: margin, y: (bounds.height - item.height) / 2 },
+      {
+        x: bounds.width - item.width - margin,
+        y: (bounds.height - item.height) / 2,
+      },
+      { x: (bounds.width - item.width) / 2, y: margin },
+      {
+        x: (bounds.width - item.width) / 2,
+        y: bounds.height - item.height - margin,
+      },
+    ];
+    var start = (index || 0) % slots.length;
+
+    for (var i = 0; i < slots.length; i++) {
+      var slot = slots[(start + i) % slots.length];
+      item.x = Math.max(0, Math.min(slot.x, bounds.width - item.width));
+      item.y = Math.max(0, Math.min(slot.y, bounds.height - item.height));
+      if (!safeZone || !this.intersectsSafeZone(item, safeZone)) {
+        return;
+      }
+    }
+  };
+
+  FloatEngine.prototype.randomizePosition = function (item, index) {
     var bounds = this.getBounds();
     var maxX = Math.max(0, bounds.width - item.width);
     var maxY = Math.max(0, bounds.height - item.height);
     var safeZone = this.getSafeZone();
     var attempts = 0;
-    var maxAttempts = 40;
+    var maxAttempts = 80;
 
     do {
       item.x = maxX > 0 ? Math.random() * maxX : 0;
@@ -118,6 +153,10 @@
       safeZone &&
       this.intersectsSafeZone(item, safeZone)
     );
+
+    if (safeZone && this.intersectsSafeZone(item, safeZone)) {
+      this.placeOutsideSafeZone(item, index);
+    }
   };
 
   FloatEngine.prototype.intersectsSafeZone = function (item, zone) {
@@ -336,14 +375,14 @@
           var engine = new FloatEngine(heroEl, floatersContainer, centerEl);
           var pending = [];
 
-          floaters.forEach(function (config) {
+          floaters.forEach(function (config, index) {
             if (isMobile && config.mobile === false) return;
 
             var created = createFloaterElement(config);
             floatersContainer.appendChild(created.wrapper);
             pending.push(
               loadImage(created.img).then(function () {
-                engine.addItem(config, created.wrapper, created.img);
+                engine.addItem(config, created.wrapper, created.img, index);
               })
             );
           });
