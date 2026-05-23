@@ -47,7 +47,7 @@
 
 .hero-landing__intro-img {
   position: absolute;
-  bottom: 62%;
+  bottom: 80%;
   left: 50%;
   transform: translateX(-50%);
   width: min(108%, 520px);
@@ -84,7 +84,7 @@
   font-size: 0.9rem;
   line-height: 1.15;
   color: #4a453c;
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.05rem;
 }
 
 .hero-landing__explore {
