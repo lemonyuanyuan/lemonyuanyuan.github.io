@@ -55,16 +55,9 @@
 
 .travel-map .leaflet-overlay-pane path.travel-country-visited {
   fill: #2c5282 !important;
-  fill-opacity: 0.72 !important;
-  stroke: #1a365d !important;
-  stroke-width: 1.2px !important;
-}
-
-.travel-map .leaflet-overlay-pane path.travel-country-unvisited {
-  fill: #ece8e3 !important;
-  fill-opacity: 0.55 !important;
-  stroke: #cfc9c2 !important;
-  stroke-width: 0.5px !important;
+  fill-opacity: 0.45 !important;
+  stroke: transparent !important;
+  stroke-width: 0 !important;
 }
 
 .travel-map-frame {

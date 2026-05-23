@@ -13,13 +13,12 @@
     [-85, -180],
     [85, 180]
   ];
-  var TILE_URL_CITIES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  var TILE_URL_COUNTRIES = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
   var HINT_CITIES =
     'By City: drag to pan and zoom. Click a marker for a short card and gallery link.';
   var HINT_COUNTRIES =
-    'By Country: blue countries are places I\'ve visited. Click a country to see cities there.';
+    'By Country: blue fill marks countries I\'ve visited; click a pin or country for cities.';
 
   var activeMap = null;
   var activeTileLayer = null;
@@ -27,10 +26,13 @@
   var travelPinIcon = null;
   var cityLayer = null;
   var countryLayer = null;
+  var countryPinLayer = null;
   var currentMode = 'cities';
   var allPlaces = [];
   var visitedCountryCodes = {};
   var placesByCountry = {};
+  var countryCentroids = {};
+  var countryNamesByCode = {};
   var cityBounds = null;
   var countryBounds = null;
 
@@ -144,28 +146,32 @@
     return props.ISO_A2 || props.iso_a2 || props.ISO_A2_EH || '';
   }
 
-  function countryStyle(isVisited) {
-    if (isVisited) {
-      return {
-        fillColor: '#2c5282',
-        fillOpacity: 0.72,
-        color: '#1a365d',
-        weight: 1.2,
-        className: 'travel-country-visited'
-      };
-    }
+  function countryStyle() {
     return {
-      fillColor: '#ece8e3',
-      fillOpacity: 0.55,
-      color: '#cfc9c2',
-      weight: 0.5,
-      className: 'travel-country-unvisited'
+      fillColor: '#2c5282',
+      fillOpacity: 0.45,
+      color: 'transparent',
+      weight: 0,
+      className: 'travel-country-visited'
     };
+  }
+
+  function indexCountryNames(geojson) {
+    countryNamesByCode = {};
+    if (!geojson || !Array.isArray(geojson.features)) return;
+
+    geojson.features.forEach(function (feature) {
+      var code = getCountryCodeFromFeature(feature);
+      if (!code) return;
+      var name = (feature.properties && feature.properties.name) || code;
+      countryNamesByCode[code] = name;
+    });
   }
 
   function indexPlaces(places) {
     visitedCountryCodes = {};
     placesByCountry = {};
+    countryCentroids = {};
 
     places.forEach(function (place) {
       if (!place.countryCode) return;
@@ -177,9 +183,22 @@
     });
 
     Object.keys(placesByCountry).forEach(function (code) {
-      placesByCountry[code].sort(function (a, b) {
+      var countryPlaces = placesByCountry[code];
+      countryPlaces.sort(function (a, b) {
         return (a.name || '').localeCompare(b.name || '');
       });
+
+      var latSum = 0;
+      var lngSum = 0;
+      countryPlaces.forEach(function (place) {
+        latSum += place.lat;
+        lngSum += place.lng;
+      });
+      countryCentroids[code] = {
+        lat: latSum / countryPlaces.length,
+        lng: lngSum / countryPlaces.length,
+        name: countryNamesByCode[code] || code
+      };
     });
   }
 
@@ -240,19 +259,6 @@
     legend.hidden = currentMode !== 'countries';
   }
 
-  function setTileForMode(mode) {
-    if (!activeTileLayer) return;
-    activeTileLayer.setUrl(mode === 'countries' ? TILE_URL_COUNTRIES : TILE_URL_CITIES);
-  }
-
-  function refreshCountryStyles() {
-    if (!countryLayer) return;
-    countryLayer.eachLayer(function (layerRef) {
-      var visited = layerRef.options.className === 'travel-country-visited';
-      layerRef.setStyle(countryStyle(visited));
-    });
-  }
-
   function updateToolbar() {
     var citiesBtn = document.getElementById('travel-map-mode-cities');
     var countriesBtn = document.getElementById('travel-map-mode-countries');
@@ -281,23 +287,32 @@
     enforceMinZoom(map);
   }
 
+  function showCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
+    if (!activeMap.hasLayer(countryPinLayer)) activeMap.addLayer(countryPinLayer);
+    countryPinLayer.bringToFront();
+  }
+
+  function hideCountryLayers() {
+    if (!activeMap || !countryLayer || !countryPinLayer) return;
+    if (activeMap.hasLayer(countryPinLayer)) activeMap.removeLayer(countryPinLayer);
+    if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
+  }
+
   function setMode(mode) {
-    if (!activeMap || !cityLayer || !countryLayer) return;
+    if (!activeMap || !cityLayer || !countryLayer || !countryPinLayer) return;
     if (mode !== 'cities' && mode !== 'countries') return;
     if (currentMode === mode) return;
 
     currentMode = mode;
 
     if (mode === 'cities') {
-      if (activeMap.hasLayer(countryLayer)) activeMap.removeLayer(countryLayer);
+      hideCountryLayers();
       if (!activeMap.hasLayer(cityLayer)) activeMap.addLayer(cityLayer);
-      setTileForMode('cities');
     } else {
       if (activeMap.hasLayer(cityLayer)) activeMap.removeLayer(cityLayer);
-      if (!activeMap.hasLayer(countryLayer)) activeMap.addLayer(countryLayer);
-      setTileForMode('countries');
-      refreshCountryStyles();
-      countryLayer.bringToFront();
+      showCountryLayers();
     }
 
     updateToolbar();
@@ -345,49 +360,53 @@
     return group;
   }
 
+  function buildCountryPinLayer() {
+    var group = L.layerGroup();
+    var pinIcon = createTravelPinIcon();
+
+    Object.keys(countryCentroids).forEach(function (code) {
+      var centroid = countryCentroids[code];
+      var latLng = L.latLng(centroid.lat, centroid.lng);
+      var marker = L.marker(latLng, { icon: pinIcon });
+      marker.bindPopup(buildCountryPopupContent(code, centroid.name), {
+        maxWidth: 280,
+        className: 'travel-leaflet-popup'
+      });
+      group.addLayer(marker);
+    });
+
+    return group;
+  }
+
   function buildCountryLayer(geojson) {
     var visitedBounds = L.latLngBounds([]);
     var layer = L.geoJSON(geojson, {
-      style: function (feature) {
+      filter: function (feature) {
         var code = getCountryCodeFromFeature(feature);
-        return countryStyle(Boolean(code && visitedCountryCodes[code]));
+        return Boolean(code && visitedCountryCodes[code]);
+      },
+      style: function () {
+        return countryStyle();
       },
       onEachFeature: function (feature, layerRef) {
         var code = getCountryCodeFromFeature(feature);
-        var name = (feature.properties && feature.properties.name) || code;
-        var isVisited = Boolean(code && visitedCountryCodes[code]);
+        var name = (feature.properties && feature.properties.name) || countryNamesByCode[code] || code;
 
-        if (isVisited && layerRef.getBounds) {
+        if (layerRef.getBounds) {
           visitedBounds.extend(layerRef.getBounds());
         }
 
-        if (isVisited) {
-          layerRef.options.className = 'travel-country-visited';
-          layerRef.bindPopup(buildCountryPopupContent(code, name), {
-            maxWidth: 280,
-            className: 'travel-leaflet-popup'
-          });
-          layerRef.on('mouseover', function () {
-            layerRef.setStyle({
-              fillOpacity: 0.85,
-              weight: 1.4
-            });
-          });
-          layerRef.on('mouseout', function () {
-            layerRef.setStyle(countryStyle(true));
-          });
-        } else {
-          layerRef.options.className = 'travel-country-unvisited';
-          layerRef.on('mouseover', function () {
-            layerRef.setStyle({
-              fillOpacity: 0.7,
-              weight: 0.7
-            });
-          });
-          layerRef.on('mouseout', function () {
-            layerRef.setStyle(countryStyle(false));
-          });
-        }
+        layerRef.options.className = 'travel-country-visited';
+        layerRef.bindPopup(buildCountryPopupContent(code, name), {
+          maxWidth: 280,
+          className: 'travel-leaflet-popup'
+        });
+        layerRef.on('mouseover', function () {
+          layerRef.setStyle({ fillOpacity: 0.58 });
+        });
+        layerRef.on('mouseout', function () {
+          layerRef.setStyle(countryStyle());
+        });
       }
     });
 
@@ -401,6 +420,7 @@
       return;
     }
 
+    indexCountryNames(geojson);
     allPlaces = places;
     indexPlaces(places);
     container.innerHTML = '';
@@ -414,7 +434,7 @@
       worldCopyJump: false
     });
 
-    var tileLayer = L.tileLayer(TILE_URL_CITIES, {
+    var tileLayer = L.tileLayer(TILE_URL, {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
@@ -427,6 +447,7 @@
 
     cityLayer = buildCityLayer(places);
     countryLayer = buildCountryLayer(geojson);
+    countryPinLayer = buildCountryPinLayer();
 
     currentMode = 'cities';
     map.addLayer(cityLayer);
