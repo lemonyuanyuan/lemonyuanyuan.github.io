@@ -6,16 +6,16 @@
   var DEFAULT_CENTER = [20, 0];
   var DEFAULT_ZOOM = 2;
   var SINGLE_PLACE_ZOOM = 8;
-  var MIN_ZOOM = 2;
-  var FIT_BOUNDS_MAX_ZOOM = 8;
+  var FALLBACK_MIN_ZOOM = 2;
+  var FIT_BOUNDS_MAX_ZOOM = 5;
   var MAP_MAX_BOUNDS = [
-    [-60, -170],
-    [75, 170]
-  ];
-  var WORLD_BOUNDS_CORNERS = [
     [-85, -180],
     [85, 180]
   ];
+
+  var activeMap = null;
+  var activeTileLayer = null;
+  var resizeTimer = null;
 
   function escapeHtml(text) {
     if (!text) return '';
@@ -74,31 +74,49 @@
     return html;
   }
 
+  function getFillMinZoom(map) {
+    var zoom = map.getBoundsZoom(MAP_MAX_BOUNDS, false);
+    if (zoom === Infinity || zoom === -Infinity || isNaN(zoom)) {
+      return FALLBACK_MIN_ZOOM;
+    }
+    return zoom;
+  }
+
+  function updateMinZoomToFill(map, tileLayer) {
+    map.invalidateSize();
+    var fillZoom = getFillMinZoom(map);
+    map.setMinZoom(fillZoom);
+    if (tileLayer) {
+      tileLayer.setMinZoom(fillZoom);
+    }
+    if (map.getZoom() < fillZoom) {
+      map.setZoom(fillZoom);
+    }
+  }
+
   function enforceMinZoom(map) {
     if (map.getZoom() < map.getMinZoom()) {
       map.setZoom(map.getMinZoom());
     }
   }
 
-  function getMinZoomToFillContainer(map) {
-    map.invalidateSize();
-    var size = map.getSize();
-    if (!size.x || !size.y) {
-      return MIN_ZOOM;
-    }
+  function bindMapResizeHandlers(map, tileLayer) {
+    activeMap = map;
+    activeTileLayer = tileLayer;
 
-    var worldBounds = L.latLngBounds(WORLD_BOUNDS_CORNERS[0], WORLD_BOUNDS_CORNERS[1]);
-    var fillZoom = map.getBoundsZoom(worldBounds, true);
-    return Math.max(MIN_ZOOM, fillZoom);
+    map.on('zoomend', function () {
+      enforceMinZoom(map);
+    });
+
+    window.addEventListener('resize', onWindowResize);
   }
 
-  function updateMinZoomForContainer(map, tileLayer) {
-    var fillZoom = getMinZoomToFillContainer(map);
-    map.setMinZoom(fillZoom);
-    if (tileLayer) {
-      tileLayer.options.minZoom = fillZoom;
-    }
-    enforceMinZoom(map);
+  function onWindowResize() {
+    if (!activeMap) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      updateMinZoomToFill(activeMap, activeTileLayer);
+    }, 150);
   }
 
   function initMap(container, places) {
@@ -107,12 +125,17 @@
       return;
     }
 
+    if (typeof L.markerClusterGroup !== 'function') {
+      showMessage(container, 'Map clustering failed to load. Please refresh the page.');
+      return;
+    }
+
     container.innerHTML = '';
 
     var map = L.map(container, {
       scrollWheelZoom: true,
       zoomControl: true,
-      minZoom: MIN_ZOOM,
+      minZoom: FALLBACK_MIN_ZOOM,
       maxBounds: MAP_MAX_BOUNDS,
       maxBoundsViscosity: 1.0,
       worldCopyJump: false
@@ -121,25 +144,32 @@
     var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      minZoom: MIN_ZOOM,
+      minZoom: FALLBACK_MIN_ZOOM,
       maxZoom: 19,
       noWrap: true
-    }).addTo(map);
+    });
+    tileLayer.addTo(map);
 
     var bounds = L.latLngBounds([]);
-    var markers = [];
+    var clusterGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true
+    });
 
     places.forEach(function (place) {
       var latLng = L.latLng(place.lat, place.lng);
       bounds.extend(latLng);
 
-      var marker = L.marker(latLng).addTo(map);
+      var marker = L.marker(latLng);
       marker.bindPopup(buildPopupContent(place), {
         maxWidth: 280,
         className: 'travel-leaflet-popup'
       });
-      markers.push(marker);
+      clusterGroup.addLayer(marker);
     });
+
+    map.addLayer(clusterGroup);
 
     if (places.length === 1) {
       map.setView([places[0].lat, places[0].lng], SINGLE_PLACE_ZOOM);
@@ -149,22 +179,10 @@
       map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
     }
 
-    updateMinZoomForContainer(map, tileLayer);
-
-    map.on('zoomend', function () {
-      enforceMinZoom(map);
-    });
-
-    var resizeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        updateMinZoomForContainer(map, tileLayer);
-      }, 150);
-    });
+    bindMapResizeHandlers(map, tileLayer);
 
     setTimeout(function () {
-      updateMinZoomForContainer(map, tileLayer);
+      updateMinZoomToFill(map, tileLayer);
     }, 100);
   }
 
