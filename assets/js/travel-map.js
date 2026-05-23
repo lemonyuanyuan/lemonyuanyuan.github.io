@@ -3,9 +3,32 @@
 
   var MAP_CONTAINER_ID = 'travel-map';
   var DATA_URL = 'assets/data/travel-places.json';
-  var DEFAULT_CENTER = [20, 0];
-  var DEFAULT_ZOOM = 2;
-  var SINGLE_PLACE_ZOOM = 8;
+  var worldBounds = null;
+  var MIN_ZOOM = 2;
+  var MAX_ZOOM = 18;
+  var SINGLE_PLACE_ZOOM = 9;
+  var FIT_BOUNDS_MAX_ZOOM = 8;
+
+  var pinIcon = null;
+
+  function getWorldBounds() {
+    if (!worldBounds) {
+      worldBounds = L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180));
+    }
+    return worldBounds;
+  }
+
+  function getPinIcon() {
+    if (pinIcon) return pinIcon;
+    pinIcon = L.divIcon({
+      className: 'travel-marker-wrap',
+      html: '<span class="travel-marker-pin" aria-hidden="true"></span>',
+      iconSize: [30, 38],
+      iconAnchor: [15, 38],
+      popupAnchor: [0, -34]
+    });
+    return pinIcon;
+  }
 
   function escapeHtml(text) {
     if (!text) return '';
@@ -64,6 +87,26 @@
     return html;
   }
 
+  function addTileLayer(map) {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20,
+      minZoom: MIN_ZOOM,
+      noWrap: true,
+      bounds: getWorldBounds()
+    }).addTo(map);
+  }
+
+  function clampView(map) {
+    if (map.getZoom() < MIN_ZOOM) {
+      map.setZoom(MIN_ZOOM);
+    }
+    map.panInsideBounds(getWorldBounds(), { animate: false });
+  }
+
   function initMap(container, places) {
     if (typeof L === 'undefined') {
       showMessage(container, 'Map library failed to load. Please refresh the page.');
@@ -74,40 +117,48 @@
 
     var map = L.map(container, {
       scrollWheelZoom: true,
-      zoomControl: true
+      zoomControl: true,
+      worldCopyJump: false,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      maxBounds: getWorldBounds(),
+      maxBoundsViscosity: 1.0
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    }).addTo(map);
+    addTileLayer(map);
 
     var bounds = L.latLngBounds([]);
-    var markers = [];
+    var icon = getPinIcon();
 
     places.forEach(function (place) {
       var latLng = L.latLng(place.lat, place.lng);
       bounds.extend(latLng);
 
-      var marker = L.marker(latLng).addTo(map);
+      var marker = L.marker(latLng, { icon: icon }).addTo(map);
       marker.bindPopup(buildPopupContent(place), {
         maxWidth: 280,
         className: 'travel-leaflet-popup'
       });
-      markers.push(marker);
     });
 
     if (places.length === 1) {
       map.setView([places[0].lat, places[0].lng], SINGLE_PLACE_ZOOM);
     } else if (places.length > 1) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
-    } else {
-      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
+      map.fitBounds(bounds, {
+        padding: [48, 48],
+        maxZoom: FIT_BOUNDS_MAX_ZOOM
+      });
     }
+
+    clampView(map);
+
+    map.on('zoomend', function () {
+      clampView(map);
+    });
 
     setTimeout(function () {
       map.invalidateSize();
+      clampView(map);
     }, 100);
   }
 

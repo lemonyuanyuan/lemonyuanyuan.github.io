@@ -1,0 +1,19 @@
+- title: "Paper / Topic Title (Placeholder)"
+  venue: "Conference / Journal 20XX"
+  authors: "Xinyuan Wang, Co-author A, Co-author B"
+  description: "One-line summary of the research contribution. Replace with your actual work."
+  badge: "Preprint"
+  links:
+    - label: "PDF"
+      url: "#"
+    - label: "Code"
+      url: "https://github.com/lemonyuanyuan"
+
+- title: "Another Research Entry (Placeholder)"
+  venue: "Workshop 20XX"
+  authors: "Co-author A, **Xinyuan Wang**"
+  description: "Brief description of methods and results."
+  badge: "Under review"
+  links:
+    - label: "Paper"
+      url: "#"

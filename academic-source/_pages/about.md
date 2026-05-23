@@ -8,55 +8,44 @@ redirect_from:
   - /about.html
 ---
 
-{% if site.google_scholar_stats_use_cdn %}
-{% assign gsDataBaseUrl = "https://cdn.jsdelivr.net/gh/" | append: site.repository | append: "@" %}
-{% else %}
-{% assign gsDataBaseUrl = "https://raw.githubusercontent.com/" | append: site.repository | append: "/" %}
-{% endif %}
-{% assign url = gsDataBaseUrl | append: "google-scholar-stats/gs_data_shieldsio.json" %}
-
 <span class='anchor' id='about-me'></span>
 
-Hi, I am **Xinyuan**. Welcome to my academic homepage.
+Hi, I am **Xinyuan Wang** (王心元). Welcome to my academic homepage.
 
-<!-- TODO: Replace with your research introduction -->
-My research interests include [your research areas]. I am passionate about exploring [topics you care about].
+I am interested in [your research areas — e.g., machine learning, robotics, computer vision]. This page highlights my education, research, and projects. Feel free to reach out via email or GitHub.
 
-<!-- Uncomment after configuring GOOGLE_SCHOLAR_ID in GitHub Secrets -->
-<!-- Total <a href='https://scholar.google.com/citations?user=YOUR_ID'>google scholar citations <strong><span id='total_cit'>0</span></strong></a> (You can also use google scholar badge <a href='https://scholar.google.com/citations?user=YOUR_ID'><img src="https://img.shields.io/endpoint?url={{ url | url_encode }}&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>). -->
+<span class='anchor' id='-educations'></span>
+# Educations
 
+- *Present — TODO*, Degree, University Name.
+- *20XX — 20XX*, Degree, University Name.
 
-# 🔥 News
-- *2025.05*: &nbsp;🎉 Academic homepage launched at `/portfolio`.
-- *TODO*: &nbsp;Add your latest news here.
+<span class='anchor' id='-news'></span>
+# News
 
-# 📝 Publications 
+- *2025.05*: Academic homepage launched at `/portfolio`.
+- *TODO*: Add your latest news here.
 
-<!-- Example featured paper with image -->
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">Conference 20XX</div><img src='images/500x300.png' alt="paper thumbnail" width="100%"></div></div>
-<div class='paper-box-text' markdown="1">
+<span class='anchor' id='-research'></span>
+# Research
 
-[Paper Title Placeholder](https://example.com)
+{% include float-cards.html type="research" %}
 
-**Xinyuan**, Co-author A, Co-author B
+<span class='anchor' id='-projects'></span>
+# Projects
 
-[**Paper**](https://example.com) | [**Code**](https://github.com/lemonyuanyuan)
-<!-- <strong><span class='show_paper_citations' data='YOUR_PAPER_ID'></span></strong> -->
-- Brief description of the paper contribution.
-</div>
-</div>
+{% include float-cards.html type="projects" %}
 
-- [Paper title placeholder](https://example.com), Author A, **Xinyuan**, Author C, **Conference/Journal 20XX**
+<span class='anchor' id='-miscellaneous'></span>
+# Miscellaneous
 
-# 🎖 Honors and Awards
-- *TODO* Add honors and awards here.
+## Service
 
-# 📖 Educations
-- *TODO - Present*, Degree, University.
-- *TODO - Graduation*, Degree, University.
+- *Placeholder* — Reviewer / teaching assistant / volunteer roles (to be filled).
+- *Placeholder* — Department or community service.
 
-# 💬 Invited Talks
-- *TODO* Add invited talks here.
+## Beyond Research
 
-# 💻 Internships
-- *TODO* Add internship experience here.
+Personal site for travel, photography, podcast, and life beyond academia:
+
+<a class="beyond-research-link" href="https://lemonyuanyuan.github.io" target="_blank" rel="noopener">Visit lemonyuanyuan.github.io</a>

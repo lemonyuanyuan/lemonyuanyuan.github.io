@@ -8,8 +8,8 @@
 # Site Settings
 url                      : "https://lemonyuanyuan.github.io"
 baseurl                  : "/portfolio"
-title                    : "Xinyuan"
-description              : "Academic homepage of Xinyuan."
+title                    : "Xinyuan Wang"
+description              : "Academic homepage of Xinyuan Wang."
 repository               : "lemonyuanyuan/lemonyuanyuan.github.io"
 google_scholar_stats_use_cdn : true
 
@@ -23,7 +23,7 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 
 # Site Author
 author:
-  name             : "Xinyuan"
+  name             : "Xinyuan Wang"
   avatar           : "images/avatar.jpg"
   bio              : "Researcher & Explorer"
   location         : "China"

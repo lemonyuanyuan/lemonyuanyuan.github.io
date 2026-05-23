@@ -1,0 +1,42 @@
+{% if include.type == "research" %}
+  {% assign cards = site.data.research %}
+{% elsif include.type == "projects" %}
+  {% assign cards = site.data.projects %}
+{% else %}
+  {% assign cards = nil %}
+{% endif %}
+
+{% if cards %}
+<div class="float-card-grid">
+  {% for card in cards %}
+  <article class="float-card">
+    {% if card.badge %}
+    <span class="float-card__badge">{{ card.badge }}</span>
+    {% endif %}
+    <h3 class="float-card__title">
+      {% if card.links and card.links.size > 0 and card.links[0].url != "#" %}
+        <a href="{{ card.links[0].url }}">{{ card.title }}</a>
+      {% else %}
+        {{ card.title }}
+      {% endif %}
+    </h3>
+    {% if card.authors %}
+    <p class="float-card__authors">{{ card.authors }}</p>
+    {% endif %}
+    {% if card.venue %}
+    <p class="float-card__venue"><em>{{ card.venue }}</em></p>
+    {% endif %}
+    {% if card.description %}
+    <p class="float-card__description">{{ card.description }}</p>
+    {% endif %}
+    {% if card.links %}
+    <div class="float-card__links">
+      {% for link in card.links %}
+        <a class="float-card__link" href="{{ link.url }}">{{ link.label }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+{% endif %}

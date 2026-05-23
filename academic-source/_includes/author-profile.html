@@ -9,7 +9,12 @@
   </div>
 
   <div class="author__content">
-    <h3 class="author__name">{{ author.name }}</h3>
+    <h3 class="author__name author__name--rotate">
+      <span class="name-rotate" aria-live="polite">
+        <span class="name-rotate__item is-active">Xinyuan Wang</span>
+        <span class="name-rotate__item">王心元</span>
+      </span>
+    </h3>
     {% if author.bio %}<p class="author__bio">{{ author.bio }}</p>{% endif %}
   </div>
 

@@ -1,0 +1,19 @@
+- title: "Engineering Project (Placeholder)"
+  venue: "Personal / Course Project"
+  authors: "Xinyuan Wang"
+  description: "A short description of what you built, the stack, and the outcome."
+  badge: "Software"
+  links:
+    - label: "GitHub"
+      url: "https://github.com/lemonyuanyuan"
+    - label: "Demo"
+      url: "#"
+
+- title: "Open Source Tool (Placeholder)"
+  venue: "Collaborative Project"
+  authors: "Xinyuan Wang, Team"
+  description: "Describe the problem, your role, and impact."
+  badge: "Tooling"
+  links:
+    - label: "Repo"
+      url: "https://github.com/lemonyuanyuan"
