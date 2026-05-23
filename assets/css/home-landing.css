@@ -1,4 +1,4 @@
-/* Home landing hero — bubble intro screen */
+/* Home landing hero — transparent floaters with physics */
 
 .hero-landing {
   position: relative;
@@ -10,14 +10,14 @@
   background: linear-gradient(160deg, #f5f7fa 0%, #e8ecf1 45%, #f0f2f5 100%);
 }
 
-.hero-landing__bubbles {
+.hero-landing__floaters {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
 }
 
-.hero-landing__bubbles .hero-bubble {
+.hero-landing__floaters .hero-floater {
   pointer-events: auto;
 }
 
@@ -33,15 +33,9 @@
 }
 
 .hero-landing__portrait {
-  width: min(280px, 55vw);
-  height: min(280px, 55vw);
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center 30%;
-  border: 4px solid rgba(255, 255, 255, 0.85);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.06);
+  width: min(320px, 60vw);
+  height: auto;
+  object-fit: contain;
   margin-bottom: 1.75rem;
 }
 
@@ -80,38 +74,29 @@
   visibility: visible;
 }
 
-/* Floating bubbles */
-.hero-bubble {
+/* Floating icons */
+.hero-floater {
   position: absolute;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
+  left: 0;
+  top: 0;
+  will-change: transform;
   cursor: default;
-  animation: hero-bubble-float var(--bubble-duration, 5s) ease-in-out infinite;
-  animation-delay: var(--bubble-delay, 0s);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.hero-bubble--link {
+.hero-floater--link {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
 }
 
-.hero-bubble__img {
+.hero-floater__img {
   display: block;
-  width: var(--bubble-size, 72px);
-  height: var(--bubble-size, 72px);
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid rgba(255, 255, 255, 0.75);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.14),
-    0 1px 4px rgba(0, 0, 0, 0.08);
-  background: #fff;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  width: var(--floater-size, 72px);
+  height: auto;
+  transition: transform 0.2s ease;
 }
 
-.hero-bubble__tooltip {
+.hero-floater__tooltip {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 10px);
@@ -133,7 +118,7 @@
   z-index: 10;
 }
 
-.hero-bubble__tooltip::after {
+.hero-floater__tooltip::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -143,35 +128,21 @@
   border-top-color: rgba(45, 52, 58, 0.92);
 }
 
-.hero-bubble:hover,
-.hero-bubble:focus-within {
-  animation-play-state: paused;
+.hero-floater:hover,
+.hero-floater:focus-within {
   z-index: 5;
 }
 
-.hero-bubble:hover .hero-bubble__img,
-.hero-bubble:focus-within .hero-bubble__img {
-  transform: scale(1.08);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.1);
+.hero-floater:hover .hero-floater__img,
+.hero-floater:focus-within .hero-floater__img {
+  transform: scale(1.06);
 }
 
-.hero-bubble:hover .hero-bubble__tooltip,
-.hero-bubble:focus-within .hero-bubble__tooltip {
+.hero-floater:hover .hero-floater__tooltip,
+.hero-floater:focus-within .hero-floater__tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
-}
-
-@keyframes hero-bubble-float {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) translateY(0);
-  }
-  50% {
-    transform: translate(-50%, -50%) translateY(-14px);
-  }
 }
 
 /* Story preload fade-in compatibility */
@@ -187,8 +158,7 @@ body.is-preload .hero-landing.onload-content-fade-up .hero-landing__center {
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
   .hero-landing__portrait {
-    width: min(220px, 48vw);
-    height: min(220px, 48vw);
+    width: min(260px, 55vw);
     margin-bottom: 1.25rem;
   }
 
@@ -197,13 +167,7 @@ body.is-preload .hero-landing.onload-content-fade-up .hero-landing__center {
     padding: 0 0.5rem;
   }
 
-  .hero-bubble__img {
-    width: var(--bubble-size, 52px);
-    height: var(--bubble-size, 52px);
-    border-width: 2px;
-  }
-
-  .hero-bubble__tooltip {
+  .hero-floater__tooltip {
     font-size: 0.75rem;
     min-width: 8rem;
     max-width: 11rem;
@@ -211,10 +175,6 @@ body.is-preload .hero-landing.onload-content-fade-up .hero-landing__center {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-bubble {
-    animation: none;
-  }
-
   .hero-landing .name-rotate__item {
     transition: none;
   }
