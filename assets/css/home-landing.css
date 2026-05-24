@@ -47,7 +47,7 @@
 
 .hero-landing__intro-img {
   position: absolute;
-  bottom: 100%;
+  bottom: 95%;
   left: 50%;
   transform: translateX(-50%);
   width: min(130%, 680px);
@@ -112,19 +112,6 @@
 .hero-floater.is-visible {
   opacity: 1;
   transition: opacity 0.3s ease;
-}
-
-.hero-floater.is-preparing {
-  opacity: 0;
-  visibility: hidden;
-  transition: none !important;
-}
-
-.hero-floater.is-bursting,
-.hero-floater.is-bursting.is-visible {
-  visibility: visible;
-  opacity: 1;
-  transition: none !important;
 }
 
 .hero-floater--link {

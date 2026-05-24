@@ -7,13 +7,8 @@
   var SPEED_MIN = 0.02;
   var SPEED_MAX = 0.05;
   var BURST_DURATION_MS = 900;
-  var BURST_COOLDOWN_MS = 250;
   var BURST_SPEED = 1.2;
   var PORTRAIT_ORIGIN_Y_RATIO = 0.58;
-
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
 
   function prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -40,7 +35,6 @@
     this.running = false;
     this.bursting = false;
     this.burstStart = 0;
-    this.burstCooldownUntil = 0;
     this.reducedMotion = prefersReducedMotion();
   }
 
@@ -280,20 +274,6 @@
     }
   };
 
-  FloatEngine.prototype.prepareBurstOrigin = function () {
-    var origin = this.getPortraitOrigin();
-
-    for (var i = 0; i < this.items.length; i++) {
-      var item = this.items[i];
-      item.x = origin.x - item.width / 2;
-      item.y = origin.y - item.height / 2;
-      item.vx = 0;
-      item.vy = 0;
-      item.el.classList.add("is-preparing");
-      this.renderItem(item);
-    }
-  };
-
   FloatEngine.prototype.setupBurst = function () {
     var origin = this.getPortraitOrigin();
     var count = this.items.length;
@@ -309,8 +289,7 @@
       item.vx = Math.cos(angle) * speed;
       item.vy = Math.sin(angle) * speed;
       item.bursting = true;
-      item.el.classList.remove("is-preparing");
-      item.el.classList.add("is-bursting", "is-visible");
+      item.el.classList.add("is-visible");
       this.renderItem(item);
     }
 
@@ -321,23 +300,20 @@
   FloatEngine.prototype.tickBurst = function (elapsed) {
     var bounds = this.getBounds();
     var progress = Math.min(elapsed / BURST_DURATION_MS, 1);
-    var speedFactor = 1 - easeOutCubic(progress) * 0.65;
+    var damping = 1 - progress * 0.35;
 
     for (var i = 0; i < this.items.length; i++) {
       var item = this.items[i];
-      item.x += item.vx * speedFactor;
-      item.y += item.vy * speedFactor;
+      item.x += item.vx * damping;
+      item.y += item.vy * damping;
       this.clampPosition(item);
-      this.resolveEdgeCollision(item, bounds);
       this.renderItem(item);
     }
 
     if (progress >= 1) {
       this.bursting = false;
-      this.burstCooldownUntil = performance.now() + BURST_COOLDOWN_MS;
       for (var j = 0; j < this.items.length; j++) {
         this.items[j].bursting = false;
-        this.items[j].el.classList.remove("is-bursting");
       }
     }
   };
@@ -350,7 +326,6 @@
     }
 
     var bounds = this.getBounds();
-    var inCooldown = performance.now() < this.burstCooldownUntil;
 
     for (var i = 0; i < this.items.length; i++) {
       var item = this.items[i];
@@ -360,9 +335,7 @@
       item.y += item.vy;
 
       this.resolveEdgeCollision(item, bounds);
-      if (!inCooldown) {
-        this.resolveAllZoneCollisions(item);
-      }
+      this.resolveAllZoneCollisions(item);
 
       this.renderItem(item);
     }
@@ -408,12 +381,9 @@
 
     return new Promise(function (resolve) {
       window.requestAnimationFrame(function () {
-        self.prepareBurstOrigin();
-        window.requestAnimationFrame(function () {
-          self.setupBurst();
-          self.start();
-          setTimeout(resolve, BURST_DURATION_MS + BURST_COOLDOWN_MS + 50);
-        });
+        self.setupBurst();
+        self.start();
+        setTimeout(resolve, BURST_DURATION_MS + 50);
       });
     });
   };
@@ -518,7 +488,6 @@
           }
 
           engine.playIntro().then(function () {
-            // playIntro already starts the loop; only restart if it stopped
             if (!engine.reducedMotion && !engine.running) {
               engine.start();
             }

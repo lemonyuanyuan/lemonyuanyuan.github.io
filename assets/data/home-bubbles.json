@@ -4,7 +4,7 @@
     "image": "images/home/tennis.png",
     "intro": "The inner game of tennis",
     "link": null,
-    "size": 140,
+    "size": 150,
     "mobile": true
   },
   {
@@ -12,7 +12,7 @@
     "image": "images/home/climbing.png",
     "intro": "Climb on!",
     "link": null,
-    "size": 130,
+    "size": 150,
     "mobile": true
   },
   {
@@ -20,7 +20,7 @@
     "image": "images/home/guitar.png",
     "intro": "Pink Floyd, Oasis, MCR, The Cure, Eagles, and more",
     "link": null,
-    "size": 130,
+    "size": 150,
     "mobile": true
   },
   {
@@ -28,7 +28,7 @@
     "image": "images/home/lemon.png",
     "intro": "My favorite one",
     "link": null,
-    "size": 180,
+    "size": 190,
     "mobile": true
   },
   {
@@ -36,7 +36,7 @@
     "image": "images/home/hzm.png",
     "intro": "Cutie",
     "link": null,
-    "size": 180,
+    "size": 190,
     "mobile": true
   },
   {
@@ -44,7 +44,7 @@
     "image": "images/geek.jpeg",
     "intro": "Build something meaningful",
     "link": "/portfolio/",
-    "size": 108,
+    "size": 150,
     "mobile": true
   },
   {
@@ -53,30 +53,54 @@
     "intro": "废话联翩 Fluttering Nonsense",
     "link": "https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd",
     "size": 105,
-    "mobile": false
+    "mobile": true
+  },
+  // {
+  //   "id": "reading",
+  //   "image": "images/reading.jpeg",
+  //   "intro": "Reading — 读书笔记与思考。",
+  //   "link": "reading.html",
+  //   "size": 108,
+  //   "mobile": true
+  // },  
+  {
+    "id": "outdoor",
+    "image": "images/home/outdoor.png",
+    "intro": "Child of Nature",
+    "link": null,
+    "size": 150,
+    "mobile": true
   },
   {
-    "id": "reading",
-    "image": "images/reading.jpeg",
-    "intro": "Reading — 读书笔记与思考。",
-    "link": "reading.html",
-    "size": 108,
+    "id": "movie",
+    "image": "images/home/movie.png",
+    "intro": "We live three times as long since man invented movies",
+    "link": null,
+    "size": 150,
+    "mobile": true
+  },
+  {
+    "id": "running",
+    "image": "images/home/running.png",
+    "intro": "How I fix myself",
+    "link": null,
+    "size": 150,
     "mobile": true
   },
   {
     "id": "travel",
-    "image": "images/travel.JPG",
-    "intro": "Travel — 在路上留下的足迹。",
+    "image": "images/home/travel.png",
+    "intro": "On the road",
     "link": "travel.html",
-    "size": 100,
+    "size": 150,
     "mobile": true
   },
   {
     "id": "gallery",
     "image": "images/nikon.jpeg",
-    "intro": "Gallery — 透过镜头看世界。",
+    "intro": "See through my eyes",
     "link": "gallery.html",
-    "size": 105,
-    "mobile": false
+    "size": 150,
+    "mobile": true
   }
 ]
