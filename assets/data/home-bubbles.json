@@ -55,14 +55,6 @@
     "size": 105,
     "mobile": true
   },
-  // {
-  //   "id": "reading",
-  //   "image": "images/reading.jpeg",
-  //   "intro": "Reading — 读书笔记与思考。",
-  //   "link": "reading.html",
-  //   "size": 108,
-  //   "mobile": true
-  // },  
   {
     "id": "outdoor",
     "image": "images/home/outdoor.png",
