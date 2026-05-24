@@ -434,6 +434,27 @@
     });
   }
 
+  function initHeroClickScroll(heroEl) {
+    function scrollToFirstSection() {
+      var target = document.getElementById("first");
+      if (!target) return;
+
+      var top =
+        target.getBoundingClientRect().top + window.pageYOffset;
+      var offset = (window.innerHeight - target.offsetHeight) / 2;
+
+      window.scrollTo({
+        top: Math.max(top - offset, 0),
+        behavior: "smooth",
+      });
+    }
+
+    heroEl.addEventListener("click", function (e) {
+      if (e.target.closest("a, button, .hero-floater")) return;
+      scrollToFirstSection();
+    });
+  }
+
   function initFloaters() {
     var heroEl = document.querySelector(".hero-landing");
     var floatersContainer = document.querySelector(".hero-landing__floaters");
@@ -443,6 +464,8 @@
     var stageEl = document.querySelector(".hero-landing__stage");
 
     if (!heroEl || !floatersContainer) return;
+
+    initHeroClickScroll(heroEl);
 
     function startEngine() {
       fetch(FLOATERS_URL)
