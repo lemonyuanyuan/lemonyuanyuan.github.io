@@ -25,7 +25,7 @@
   height: 380px;
   border-radius: 6px;
   /* Matches the globe's sky so there is no flash before the canvas paints. */
-  background: #1b3a57;
+  background: #0f2a44;
   z-index: 0;
   overflow: hidden;
 }
@@ -38,7 +38,6 @@
   outline: none;
 }
 
-/* Zoom / compass control */
 .travel-map .maplibregl-ctrl-group {
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
@@ -46,10 +45,6 @@
 
 .travel-map .maplibregl-ctrl-attrib {
   font-size: 0.7rem;
-}
-
-.travel-map .maplibregl-marker {
-  cursor: pointer;
 }
 
 @media screen and (min-width: 737px) {
@@ -76,28 +71,185 @@
 }
 
 /* --------------------------------------------------------------------------
-   Popup
+   Pins — grow on hover and name themselves
    -------------------------------------------------------------------------- */
 
-.travel-maplibre-popup .maplibregl-popup-content {
-  border-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
-  padding: 0.85rem 1rem 1rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  line-height: 1.5;
+.travel-map .travel-pin {
+  cursor: pointer;
 }
 
-/* main.css styles every <button> as a 3.75em pill with an inset border, which
-   turns MapLibre's popup close button into a big box. Undo that. */
-.travel-maplibre-popup .maplibregl-popup-close-button {
+/* MapLibre drives the marker's own transform for positioning, so the hover
+   scale has to go on the SVG inside it. */
+.travel-map .travel-pin svg {
+  transition: transform 0.18s cubic-bezier(0.2, 0.7, 0.3, 1);
+  transform-origin: center bottom;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+.travel-map .travel-pin:hover svg {
+  transform: scale(1.3);
+}
+
+.travel-map .travel-pin:hover {
+  z-index: 5;
+}
+
+.travel-pin__label {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  padding: 0.28rem 0.55rem;
+  border-radius: 3px;
+  background: rgba(17, 17, 17, 0.92);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.3, 1),
+    visibility 0.18s;
+}
+
+.travel-pin__label::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  border: solid 4px transparent;
+  border-top-color: rgba(17, 17, 17, 0.92);
+}
+
+.travel-map .travel-pin:hover .travel-pin__label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .travel-map .travel-pin svg,
+  .travel-pin__label {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Segmented mode control (top-left) + legend (bottom-left)
+   -------------------------------------------------------------------------- */
+
+.travel-modes {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  backdrop-filter: saturate(160%) blur(6px);
+  -webkit-backdrop-filter: saturate(160%) blur(6px);
+}
+
+/* Two stylesheets fight over these buttons: main.css makes every <button> a
+   3.75em pill with `color:#000 !important`, and MapLibre's own
+   `.maplibregl-ctrl button:not(:disabled):hover` (0,3,1) outranks a plain
+   `.travel-modes__btn.is-active` (0,2,0) — which left the active pill with a
+   near-transparent background and white text. Hence the extra qualifiers. */
+.travel-modes .travel-modes__btn {
+  appearance: none;
+  -webkit-appearance: none;
+  height: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0.34rem 0.8rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: visible;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.5) !important;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.travel-modes .travel-modes__btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000 !important;
+}
+
+.travel-modes .travel-modes__btn.is-active,
+.travel-modes .travel-modes__btn.is-active:hover,
+.travel-modes .travel-modes__btn.is-active:focus {
+  background: #14293f;
+  color: #fff !important;
+}
+
+/* Keep the keyboard focus ring, drop it for mouse clicks. */
+.travel-modes .travel-modes__btn:focus:not(:focus-visible),
+.travel-card-popup .maplibregl-popup-close-button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.travel-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  font-family: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.travel-legend__swatch {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(27, 58, 87, 0.55);
+  border: solid 1px rgba(18, 41, 63, 0.85);
+}
+
+/* --------------------------------------------------------------------------
+   Card popup — small and quiet
+   -------------------------------------------------------------------------- */
+
+.travel-card-popup .maplibregl-popup-content {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+}
+
+.travel-card-popup .maplibregl-popup-tip {
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+}
+
+/* Undo main.css's 3.75em pill styling on MapLibre's close button. */
+.travel-card-popup .maplibregl-popup-close-button {
   appearance: none;
   -webkit-appearance: none;
   position: absolute;
   top: 0;
   right: 0;
-  width: 1.9rem;
-  height: 1.9rem;
+  z-index: 2;
+  width: 1.6rem;
+  height: 1.6rem;
   max-width: none;
   padding: 0;
   border: none;
@@ -105,58 +257,115 @@
   box-shadow: none;
   background: transparent;
   font-family: inherit;
-  font-size: 1.1rem;
-  line-height: 1.9rem;
+  font-size: 0.95rem;
+  line-height: 1.6rem;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(0, 0, 0, 0.35) !important;
+  /* A small chip so the x stays readable over a photo or over white. */
+  margin: 5px;
+  width: 1.35rem;
+  height: 1.35rem;
+  line-height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.86);
+  color: rgba(0, 0, 0, 0.5) !important;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
-.travel-maplibre-popup .maplibregl-popup-close-button:hover {
-  background: transparent;
+.travel-card-popup .maplibregl-popup-close-button:hover {
+  background: #fff;
   color: #000 !important;
 }
 
-.travel-popup-title {
-  font-size: 1.1rem;
-  font-weight: 400;
-  letter-spacing: 0.05rem;
-  margin: 0 1.5rem 0.35rem 0;
-  line-height: 1.3;
-}
-
-.travel-popup-meta {
-  font-size: 0.85rem;
-  opacity: 0.7;
-  margin: 0 0 0.65rem 0;
-}
-
-.travel-popup-thumb {
+.travel-card__thumb {
   display: block;
   width: 100%;
-  max-height: 120px;
+  height: 84px;
   object-fit: cover;
-  border-radius: 2px;
-  margin: 0 0 0.65rem 0;
+  background: rgba(0, 0, 0, 0.06);
 }
 
-.travel-popup-summary {
-  font-size: 0.9rem;
+.travel-card__body {
+  padding: 0.6rem 0.75rem 0.7rem;
+}
+
+.travel-card__meta {
+  margin: 0 1.1rem 0.2rem 0;
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.42);
+  line-height: 1.4;
+}
+
+.travel-card__title {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.98rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.travel-card__text {
   margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.62);
 }
 
-.travel-popup-link {
+.travel-card__link {
   display: inline-block;
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
   text-decoration: none;
   color: #2c5282;
-  border-bottom: solid 1px rgba(44, 82, 130, 0.35);
+  border-bottom: solid 1px rgba(44, 82, 130, 0.3);
   padding-bottom: 2px;
 }
 
-.travel-popup-link:hover {
+.travel-card__link:hover {
   color: #000;
   border-bottom-color: #000;
+}
+
+.travel-card__list {
+  margin: 0.35rem 0 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 11rem;
+  overflow-y: auto;
+}
+
+.travel-card__list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.24rem 0;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.06);
+  font-size: 0.8rem;
+}
+
+.travel-card__list li:last-child {
+  border-bottom: none;
+}
+
+.travel-card__list a {
+  color: #2c5282;
+  text-decoration: none;
+  border-bottom: solid 1px rgba(44, 82, 130, 0.3);
+}
+
+.travel-card__list a:hover {
+  color: #000;
+  border-bottom-color: #000;
+}
+
+.travel-card__list em {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
 }

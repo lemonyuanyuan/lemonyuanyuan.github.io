@@ -1,6 +1,7 @@
 /* ==========================================================================
-   Gallery — album index + individual album pages.
-   Same palette as the rest of the site: white ground, black text, #2c5282.
+   Gallery — albums grouped by year in horizontal rails,
+   plus the staggered poster layout on each album page.
+   Palette follows main.css: white ground, black text, #2c5282 accent.
    ========================================================================== */
 
 :root {
@@ -8,12 +9,10 @@
   --gl-muted: rgba(0, 0, 0, 0.55);
   --gl-faint: rgba(0, 0, 0, 0.38);
   --gl-rule: rgba(0, 0, 0, 0.12);
-  --gl-rule-soft: rgba(0, 0, 0, 0.07);
 }
 
 /* main.css styles every <button> as a 3.75em pill capped at 20rem with
-   `color: #000 !important`. Undo that before styling ours. */
-.gl-filter,
+   `color: #000 !important`. Undo that for the ones on these pages. */
 .gl-photo,
 .gl-lightbox__close,
 .gl-lightbox__nav {
@@ -25,7 +24,6 @@
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
-  text-align: center;
   text-transform: none;
   letter-spacing: normal;
   font-weight: 300;
@@ -35,142 +33,119 @@
 }
 
 /* --------------------------------------------------------------------------
-   Hero
+   Year sections
    -------------------------------------------------------------------------- */
 
-.gl-hero {
-  max-width: 46rem;
+.gl-year {
+  margin-top: 3.5rem;
 }
 
-.gl-eyebrow {
-  display: block;
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--gl-faint);
-  margin: 0 0 1.25rem 0;
-}
-
-.gl-title {
-  font-size: 3.25rem;
-  line-height: 1.1;
-  letter-spacing: -0.045em;
-  margin: 0 0 1.25rem 0;
-}
-
-.gl-lede {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: rgba(0, 0, 0, 0.7);
-  margin: 0 0 2.5rem 0;
-}
-
-.gl-lede a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.3);
-}
-
-.gl-lede a:hover {
-  color: var(--gl-accent);
-  border-bottom-color: var(--gl-accent);
-}
-
-.gl-intro {
-  margin: 0 0 2.5rem 0;
-}
-
-.gl-intro h2 {
-  margin-bottom: 0.75rem;
-}
-
-/* --------------------------------------------------------------------------
-   Filter bar
-   -------------------------------------------------------------------------- */
-
-.gl-filters {
+.gl-year__head {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: baseline;
+  gap: 1.5rem;
   flex-wrap: wrap;
-  padding: 1.1rem 0;
-  margin-bottom: 3.5rem;
-  border-top: solid 1px var(--gl-rule);
-  border-bottom: solid 1px var(--gl-rule);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.75rem;
+  border-bottom: solid 1px #000;
 }
 
-.gl-filters[hidden] {
-  display: none;
+.gl-year__label {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  margin: 0;
+  line-height: 1;
 }
 
-.gl-filters__label {
-  font-size: 0.66rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gl-faint);
-  margin-right: 0.75rem;
+.gl-year__note {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--gl-muted);
 }
 
-.gl-filter {
-  font-family: inherit;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.45rem 1rem;
-  border: solid 1px var(--gl-rule);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--gl-muted) !important;
-  cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
-}
-
-.gl-filter:hover {
-  border-color: #000;
-  color: #000 !important;
-}
-
-.gl-filter.is-active {
-  background: #000;
-  border-color: #000;
-  color: #fff !important;
-}
-
-.gl-count {
+.gl-year__count {
   margin-left: auto;
   font-size: 0.7rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gl-faint);
-  font-variant-numeric: tabular-nums;
 }
 
 /* --------------------------------------------------------------------------
-   Album grid
+   Horizontal rail
    -------------------------------------------------------------------------- */
 
-.gl-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4.5rem 3rem;
+/* A rail that runs past the edge needs to say so. */
+.gl-rail-wrap {
+  position: relative;
+}
+
+.gl-rail-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 1rem;
+  width: 4.5rem;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff 72%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.gl-rail-wrap.has-more::after {
+  opacity: 1;
+}
+
+.gl-rail {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.gl-rail::-webkit-scrollbar {
+  height: 4px;
+}
+
+.gl-rail::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.gl-rail::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 2px;
+}
+
+.gl-rail__track {
+  display: flex;
+  gap: 1.75rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.gl-grid > li {
+.gl-rail__track > li {
+  flex: 0 0 21rem;
+  max-width: 84vw;
   margin: 0;
   padding: 0;
+  scroll-snap-align: start;
 }
+
+/* --------------------------------------------------------------------------
+   Album card
+   -------------------------------------------------------------------------- */
 
 .gl-card {
   position: relative;
-  scroll-margin-top: 6rem;
-  transition: opacity 0.3s ease;
-}
-
-.gl-card[hidden] {
-  display: none;
+  scroll-margin-top: 2rem;
 }
 
 .gl-card__link {
@@ -180,12 +155,12 @@
 }
 
 .gl-card__frame {
-  position: relative;
   display: block;
+  position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   background: rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .gl-card__frame img {
@@ -193,21 +168,20 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1), filter 0.45s ease;
+  transition: transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
 .gl-card__link:hover .gl-card__frame img {
   transform: scale(1.045);
 }
 
-/* Frame count chip */
 .gl-card__frames {
   position: absolute;
-  right: 0.85rem;
-  bottom: 0.85rem;
-  padding: 0.28rem 0.6rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.26rem 0.55rem;
   background: rgba(255, 255, 255, 0.92);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(0, 0, 0, 0.6);
@@ -220,34 +194,24 @@
   align-items: center;
   justify-content: center;
   border: dashed 1px var(--gl-rule);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gl-faint);
-}
-
-.gl-card__meta {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-size: 0.66rem;
+  font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gl-faint);
-  margin: 0 0 0.5rem 0;
 }
 
-.gl-card__meta span + span::before {
-  content: '·';
-  margin-right: 0.6rem;
-  opacity: 0.6;
+.gl-card__date {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--gl-faint);
+  margin: 0 0 0.3rem 0;
 }
 
 .gl-card__title {
-  font-size: 1.75rem;
-  letter-spacing: -0.035em;
-  line-height: 1.2;
-  margin: 0 0 0.4rem 0;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  margin: 0 0 0.3rem 0;
   transition: color 0.18s ease;
 }
 
@@ -256,22 +220,15 @@
 }
 
 .gl-card__where {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--gl-muted);
   margin: 0 0 0.75rem 0;
-}
-
-.gl-card__actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
 }
 
 .gl-card__cta {
   display: inline-block;
   font-size: 0.7rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #000;
   text-decoration: none;
@@ -285,12 +242,6 @@
   border-bottom-color: var(--gl-accent);
 }
 
-.gl-card__cta--muted {
-  color: var(--gl-faint);
-  border-bottom-color: transparent;
-  pointer-events: none;
-}
-
 .gl-card__cta .gl-arrow {
   display: inline-block;
   transition: transform 0.22s ease;
@@ -301,11 +252,11 @@
   transform: translateX(4px);
 }
 
-/* Deep-link landing state — travel.html links straight to a card */
+/* Deep-link landing state — a map marker links straight to its album card */
 .gl-card.is-target::before {
   content: '';
   position: absolute;
-  inset: -1.1rem;
+  inset: -0.9rem;
   border: solid 1px var(--gl-accent);
   pointer-events: none;
   animation: gl-target-fade 2.8s ease forwards;
@@ -322,24 +273,18 @@
   .gl-arrow { transition: none; }
 }
 
-.gl-empty {
-  padding: 3rem 0;
-  font-size: 0.95rem;
-  color: var(--gl-faint);
-}
-
 /* --------------------------------------------------------------------------
-   Album page — photo stream + lightbox
+   Album page — staggered poster wall
    -------------------------------------------------------------------------- */
 
 .gl-back {
   display: inline-block;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gl-faint);
   text-decoration: none;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   transition: color 0.18s ease;
 }
 
@@ -347,45 +292,17 @@
   color: #000;
 }
 
-.gl-album-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.5rem 3rem;
-  flex-wrap: wrap;
-  padding-bottom: 1.5rem;
-  margin-bottom: 3rem;
-  border-bottom: solid 1px #000;
+.gl-album-meta {
+  font-size: 0.85rem;
+  color: var(--gl-muted);
+  margin: -0.5rem 0 0 0;
 }
 
-.gl-album-head h1 {
-  font-size: 2.75rem;
-  letter-spacing: -0.045em;
-  line-height: 1.1;
-  margin: 0;
-}
-
-.gl-album-head .gl-eyebrow {
-  margin-bottom: 0.9rem;
-}
-
-.gl-album-head__aside {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gl-faint);
-  text-align: right;
-  margin: 0;
-}
-
-/* Grid rather than multicol: column balancing leaves a big hole when an
-   album has an odd number of frames. */
 .gl-photos {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 1.5rem;
-  margin: 0;
+  gap: 2.25rem 1.75rem;
+  margin: 2.5rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -395,43 +312,65 @@
   padding: 0;
 }
 
+/* The offset second column is what makes the wall read as posters rather
+   than a spreadsheet. */
+.gl-photos > li:nth-child(even) {
+  margin-top: 4rem;
+}
+
 .gl-photo {
   display: block;
   width: 100%;
+  aspect-ratio: 3 / 2;
   border: none;
   padding: 0;
   background: rgba(0, 0, 0, 0.05);
   cursor: zoom-in;
   overflow: hidden;
   font-size: 1rem;
+  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1),
+    box-shadow 0.4s ease;
 }
 
 .gl-photo img {
   display: block;
   width: 100%;
-  height: auto;
-  transition: opacity 0.3s ease;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.gl-photo:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
 }
 
 .gl-photo:hover img {
-  opacity: 0.86;
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-photo,
+  .gl-photo img { transition: none; }
+  .gl-photo:hover { transform: none; }
 }
 
 .gl-album-empty {
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
   border: dashed 1px var(--gl-rule);
   color: var(--gl-faint);
+  margin-top: 2rem;
 }
 
 .gl-album-empty p {
   margin: 0;
-  font-size: 0.85rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
 
-/* Lightbox */
+/* --------------------------------------------------------------------------
+   Lightbox
+   -------------------------------------------------------------------------- */
+
 .gl-lightbox {
   position: fixed;
   inset: 0;
@@ -480,7 +419,7 @@
 .gl-lightbox__close {
   top: 1.25rem;
   right: 1.5rem;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   letter-spacing: 0.1em;
 }
 
@@ -492,8 +431,8 @@
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
   color: var(--gl-faint);
   font-variant-numeric: tabular-nums;
 }
@@ -502,21 +441,21 @@
    Responsive
    -------------------------------------------------------------------------- */
 
-@media screen and (max-width: 980px) {
-  .gl-title { font-size: 2.6rem; }
-  .gl-grid { gap: 3.5rem 2rem; }
-  .gl-card__title { font-size: 1.5rem; }
-  .gl-album-head h1 { font-size: 2.2rem; }
-}
-
 @media screen and (max-width: 736px) {
-  .gl-title { font-size: 2.1rem; }
-  .gl-lede { font-size: 1rem; }
-  .gl-grid { grid-template-columns: minmax(0, 1fr); gap: 3.5rem; }
-  .gl-filters { margin-bottom: 2.5rem; }
-  .gl-count { margin-left: 0; width: 100%; }
-  .gl-photos { grid-template-columns: minmax(0, 1fr); }
-  .gl-album-head { align-items: flex-start; }
-  .gl-album-head__aside { text-align: left; }
+  .gl-year__label { font-size: 1.6rem; }
+  .gl-year__count { margin-left: 0; width: 100%; }
+  .gl-rail__track > li { flex-basis: 17rem; }
+  .gl-card__title { font-size: 1.2rem; }
+
+  .gl-photos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* No second column to stagger against on a phone. */
+  .gl-photos > li:nth-child(even) {
+    margin-top: 0;
+  }
+
   .gl-lightbox__nav { font-size: 1.3rem; padding: 0.5rem 0.6rem; }
 }

@@ -108,7 +108,7 @@
     "date": "2024/12",
     "summary": "Karst peaks along the Li River.",
     "galleryUrl": "gallery.html#guilin",
-    "thumbnail": "album/guilin/DSC_0167.JPG",
+    "thumbnail": "album/guilin/web/DSC_0167.jpg",
     "countryCode": "CN"
   },
   {
@@ -120,7 +120,7 @@
     "date": "2025/1",
     "summary": "Winter streets and mountain air.",
     "galleryUrl": "gallery.html#guizhou",
-    "thumbnail": "album/guizhou/DSC_2879-2.jpg",
+    "thumbnail": "album/guizhou/web/DSC_2879-2.jpg",
     "countryCode": "CN"
   },
   {
@@ -142,7 +142,7 @@
     "date": "2025/2",
     "summary": "Harbour light and coastal walks.",
     "galleryUrl": "gallery.html#australia",
-    "thumbnail": "album/australia/WechatIMG1455.jpeg",
+    "thumbnail": "album/australia/web/WechatIMG1455.jpg",
     "countryCode": "AU"
   },
   {
@@ -243,7 +243,8 @@
     "lng": 10.7522,
     "date": "2025/12",
     "summary": "Fjord city in winter blue.",
-    "countryCode": "NO"
+    "countryCode": "NO",
+    "galleryUrl": "gallery.html#north-europe"
   },
   {
     "id": "stockholm",
@@ -253,7 +254,9 @@
     "lng": 18.0686,
     "date": "2025/12",
     "summary": "Islands, cobblestones, and pale light.",
-    "countryCode": "SE"
+    "countryCode": "SE",
+    "galleryUrl": "gallery.html#north-europe",
+    "thumbnail": "album/NorthEurope/web/DSC_9929.jpg"
   },
   {
     "id": "copenhagen",
@@ -263,7 +266,8 @@
     "lng": 12.5683,
     "date": "2025/12",
     "summary": "Hygge, bikes, and harbour colour.",
-    "countryCode": "DK"
+    "countryCode": "DK",
+    "galleryUrl": "gallery.html#north-europe"
   },
   {
     "id": "helsinki",
@@ -273,7 +277,8 @@
     "lng": 24.9384,
     "date": "2025/12",
     "summary": "Sauna steam and Baltic calm.",
-    "countryCode": "FI"
+    "countryCode": "FI",
+    "galleryUrl": "gallery.html#north-europe"
   },
   {
     "id": "las-vegas",
