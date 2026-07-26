@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes | Xinyuan Wang</title>
+    <meta name="description" content="随记、整理与阅读 — half-formed thoughts, things I read, and things I'm still figuring out." />
+    <link rel="icon" type="image/png" sizes="32x32" href="/portfolio/images/favicon-32x32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/portfolio/images/favicon-16x16.png?v=2" />
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/site-nav.css?v=3">
+    <link rel="stylesheet" href="assets/css/notes.css?v=1">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="site-nav-bar wrapper style1 align-left">
+        <div class="inner">
+            <nav class="site-nav" aria-label="Site navigation">
+                <a class="site-nav__brand" href="index.html">Xinyuan Wang</a>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="/portfolio/">Research</a></li>
+                    <li><a href="travel.html">Travel</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd">Podcast</a></li>
+                    <li><a href="notes.html" aria-current="page">Notes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+
+            <!-- Hero -->
+            <div class="nt-hero">
+                <span class="nt-eyebrow">Notes</span>
+                <h1 class="nt-title">Notes</h1>
+                <p class="nt-subtitle">随记 · 整理 · 阅读</p>
+                <p class="nt-lede">
+                    Half-formed thoughts, things I read and wanted to keep, and the occasional
+                    attempt to organise what I actually think. Nothing here is finished &mdash;
+                    that&rsquo;s rather the point.
+                </p>
+            </div>
+
+            <div class="nt-masthead">
+                <img src="images/reading.jpeg" alt="" />
+            </div>
+
+            <!-- Filters -->
+            <div class="nt-filters" role="group" aria-label="Filter notes">
+                <span class="nt-filters__label">Filter</span>
+                <button type="button" class="nt-filter is-active" data-filter="all" aria-pressed="true">All</button>
+                <button type="button" class="nt-filter" data-filter="thoughts" aria-pressed="false">随记 Thoughts</button>
+                <button type="button" class="nt-filter" data-filter="reading" aria-pressed="false">阅读 Reading</button>
+                <button type="button" class="nt-filter" data-filter="digest" aria-pressed="false">整理 Digests</button>
+                <span class="nt-count"></span>
+            </div>
+
+            <!--
+              ADDING A NOTE
+              =============
+              Copy the block below into <ul class="nt-list">, fill it in, and the
+              filters + counter pick it up automatically. data-tags accepts any of:
+              thoughts / reading / digest (space separated for more than one).
+
+              <li>
+                <article class="nt-entry" data-tags="reading">
+                  <a class="nt-entry__link" href="notes/your-slug.html">
+                    <span class="nt-entry__date">2026.07</span>
+                    <span>
+                      <h2 class="nt-entry__title">The title of the note</h2>
+                      <p class="nt-entry__excerpt">One or two sentences that say what it is about.</p>
+                    </span>
+                    <span class="nt-entry__tag">阅读 Reading</span>
+                  </a>
+                </article>
+              </li>
+            -->
+
+            <ul class="nt-list"></ul>
+
+            <div class="nt-empty">
+                <h2>第一篇还在写</h2>
+                <p>
+                    Nothing published here yet. In the meantime, there&rsquo;s the
+                    <a href="https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd">podcast</a>,
+                    or the <a href="travel.html">travel journal</a>.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <p>&copy; 2026 Xinyuan Wang</p>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="travel.html">Travel</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="mailto:lemonwxy2017@126.com">Email</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="assets/js/notes.js?v=1"></script>
+</body>
+</html>

@@ -107,7 +107,7 @@
     "lng": 110.29,
     "date": "2024/12",
     "summary": "Karst peaks along the Li River.",
-    "galleryUrl": "album/guilin.html",
+    "galleryUrl": "gallery.html#guilin",
     "thumbnail": "album/guilin/DSC_0167.JPG",
     "countryCode": "CN"
   },
@@ -119,7 +119,7 @@
     "lng": 106.6302,
     "date": "2025/1",
     "summary": "Winter streets and mountain air.",
-    "galleryUrl": "album/guizhou.html",
+    "galleryUrl": "gallery.html#guizhou",
     "thumbnail": "album/guizhou/DSC_2879-2.jpg",
     "countryCode": "CN"
   },
@@ -141,7 +141,7 @@
     "lng": 151.2093,
     "date": "2025/2",
     "summary": "Harbour light and coastal walks.",
-    "galleryUrl": "album/australia.html",
+    "galleryUrl": "gallery.html#australia",
     "thumbnail": "album/australia/WechatIMG1455.jpeg",
     "countryCode": "AU"
   },
@@ -153,8 +153,6 @@
     "lng": 135.7681,
     "date": "2025/5",
     "summary": "Temples, alleys, and spring evenings.",
-    "galleryUrl": "album/Japan2025.html",
-    "thumbnail": "images/gallery/thumbs/02.jpg",
     "countryCode": "JP"
   },
   {

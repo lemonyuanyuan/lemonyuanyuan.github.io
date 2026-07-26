@@ -1,0 +1,522 @@
+/* ==========================================================================
+   Gallery — album index + individual album pages.
+   Same palette as the rest of the site: white ground, black text, #2c5282.
+   ========================================================================== */
+
+:root {
+  --gl-accent: #2c5282;
+  --gl-muted: rgba(0, 0, 0, 0.55);
+  --gl-faint: rgba(0, 0, 0, 0.38);
+  --gl-rule: rgba(0, 0, 0, 0.12);
+  --gl-rule-soft: rgba(0, 0, 0, 0.07);
+}
+
+/* main.css styles every <button> as a 3.75em pill capped at 20rem with
+   `color: #000 !important`. Undo that before styling ours. */
+.gl-filter,
+.gl-photo,
+.gl-lightbox__close,
+.gl-lightbox__nav {
+  appearance: none;
+  -webkit-appearance: none;
+  height: auto;
+  max-width: none;
+  line-height: inherit;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 300;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.gl-hero {
+  max-width: 46rem;
+}
+
+.gl-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  margin: 0 0 1.25rem 0;
+}
+
+.gl-title {
+  font-size: 3.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  margin: 0 0 1.25rem 0;
+}
+
+.gl-lede {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 0 0 2.5rem 0;
+}
+
+.gl-lede a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.3);
+}
+
+.gl-lede a:hover {
+  color: var(--gl-accent);
+  border-bottom-color: var(--gl-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Filter bar
+   -------------------------------------------------------------------------- */
+
+.gl-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 1.1rem 0;
+  margin-bottom: 3.5rem;
+  border-top: solid 1px var(--gl-rule);
+  border-bottom: solid 1px var(--gl-rule);
+}
+
+.gl-filters[hidden] {
+  display: none;
+}
+
+.gl-filters__label {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  margin-right: 0.75rem;
+}
+
+.gl-filter {
+  font-family: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.45rem 1rem;
+  border: solid 1px var(--gl-rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--gl-muted) !important;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.gl-filter:hover {
+  border-color: #000;
+  color: #000 !important;
+}
+
+.gl-filter.is-active {
+  background: #000;
+  border-color: #000;
+  color: #fff !important;
+}
+
+.gl-count {
+  margin-left: auto;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Album grid
+   -------------------------------------------------------------------------- */
+
+.gl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4.5rem 3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gl-grid > li {
+  margin: 0;
+  padding: 0;
+}
+
+.gl-card {
+  position: relative;
+  scroll-margin-top: 6rem;
+  transition: opacity 0.3s ease;
+}
+
+.gl-card[hidden] {
+  display: none;
+}
+
+.gl-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.gl-card__frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.25rem;
+}
+
+.gl-card__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1), filter 0.45s ease;
+}
+
+.gl-card__link:hover .gl-card__frame img {
+  transform: scale(1.045);
+}
+
+/* Frame count chip */
+.gl-card__frames {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  padding: 0.28rem 0.6rem;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.gl-card__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: dashed 1px var(--gl-rule);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+}
+
+.gl-card__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  margin: 0 0 0.5rem 0;
+}
+
+.gl-card__meta span + span::before {
+  content: '·';
+  margin-right: 0.6rem;
+  opacity: 0.6;
+}
+
+.gl-card__title {
+  font-size: 1.75rem;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  margin: 0 0 0.4rem 0;
+  transition: color 0.18s ease;
+}
+
+.gl-card__link:hover .gl-card__title {
+  color: var(--gl-accent);
+}
+
+.gl-card__where {
+  font-size: 0.95rem;
+  color: var(--gl-muted);
+  margin: 0 0 0.75rem 0;
+}
+
+.gl-card__note {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0 0 1rem 0;
+  max-width: 32rem;
+}
+
+.gl-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.gl-card__cta {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #000;
+  text-decoration: none;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.25);
+  padding-bottom: 3px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.gl-card__cta:hover {
+  color: var(--gl-accent);
+  border-bottom-color: var(--gl-accent);
+}
+
+.gl-card__cta--muted {
+  color: var(--gl-faint);
+  border-bottom-color: transparent;
+  pointer-events: none;
+}
+
+.gl-card__cta .gl-arrow {
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+
+.gl-card__link:hover .gl-arrow,
+.gl-card__cta:hover .gl-arrow {
+  transform: translateX(4px);
+}
+
+/* Deep-link landing state — travel.html links straight to a card */
+.gl-card.is-target::before {
+  content: '';
+  position: absolute;
+  inset: -1.1rem;
+  border: solid 1px var(--gl-accent);
+  pointer-events: none;
+  animation: gl-target-fade 2.8s ease forwards;
+}
+
+@keyframes gl-target-fade {
+  0%, 55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-card.is-target::before { animation: none; opacity: 0.6; }
+  .gl-card__frame img,
+  .gl-arrow { transition: none; }
+}
+
+.gl-empty {
+  padding: 3rem 0;
+  font-size: 0.95rem;
+  color: var(--gl-faint);
+}
+
+/* --------------------------------------------------------------------------
+   Album page — photo stream + lightbox
+   -------------------------------------------------------------------------- */
+
+.gl-back {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  text-decoration: none;
+  margin-bottom: 2rem;
+  transition: color 0.18s ease;
+}
+
+.gl-back:hover {
+  color: #000;
+}
+
+.gl-album-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
+  margin-bottom: 3rem;
+  border-bottom: solid 1px #000;
+}
+
+.gl-album-head h1 {
+  font-size: 2.75rem;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.gl-album-head .gl-eyebrow {
+  margin-bottom: 0.9rem;
+}
+
+.gl-album-head__aside {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gl-faint);
+  text-align: right;
+  margin: 0;
+}
+
+/* Grid rather than multicol: column balancing leaves a big hole when an
+   album has an odd number of frames. */
+.gl-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gl-photos > li {
+  margin: 0;
+  padding: 0;
+}
+
+.gl-photo {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: zoom-in;
+  overflow: hidden;
+  font-size: 1rem;
+}
+
+.gl-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.3s ease;
+}
+
+.gl-photo:hover img {
+  opacity: 0.86;
+}
+
+.gl-album-empty {
+  padding: 5rem 2rem;
+  text-align: center;
+  border: dashed 1px var(--gl-rule);
+  color: var(--gl-faint);
+}
+
+.gl-album-empty p {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Lightbox */
+.gl-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.97);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.gl-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gl-lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  display: block;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.18);
+}
+
+.gl-lightbox__close,
+.gl-lightbox__nav {
+  position: absolute;
+  border: none;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.45) !important;
+  font-family: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.gl-lightbox__close:hover,
+.gl-lightbox__nav:hover {
+  color: #000 !important;
+}
+
+.gl-lightbox__close {
+  top: 1.25rem;
+  right: 1.5rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+}
+
+.gl-lightbox__nav--prev { left: 0.5rem; }
+.gl-lightbox__nav--next { right: 0.5rem; }
+
+.gl-lightbox__counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--gl-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 980px) {
+  .gl-title { font-size: 2.6rem; }
+  .gl-grid { gap: 3.5rem 2rem; }
+  .gl-card__title { font-size: 1.5rem; }
+  .gl-album-head h1 { font-size: 2.2rem; }
+}
+
+@media screen and (max-width: 736px) {
+  .gl-title { font-size: 2.1rem; }
+  .gl-lede { font-size: 1rem; }
+  .gl-grid { grid-template-columns: minmax(0, 1fr); gap: 3.5rem; }
+  .gl-filters { margin-bottom: 2.5rem; }
+  .gl-count { margin-left: 0; width: 100%; }
+  .gl-photos { grid-template-columns: minmax(0, 1fr); }
+  .gl-album-head { align-items: flex-start; }
+  .gl-album-head__aside { text-align: left; }
+  .gl-lightbox__nav { font-size: 1.3rem; padding: 0.5rem 0.6rem; }
+}

@@ -24,10 +24,10 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 # Site Author
 author:
   name             : "Xinyuan Wang"
-  avatar           : "images/avatar.jpg"
+  avatar           : "images/geek.jpeg"
   bio              : "Undergraduate Student"
   location         :
-  employer         : "Your University"
+  employer         : "University of Michigan, Ann Arbor"
   employer_url     : "https://example.com"
   cv               : "https://example.com/cv.pdf"
   pubmed           : 
