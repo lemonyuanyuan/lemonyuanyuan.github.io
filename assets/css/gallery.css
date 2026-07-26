@@ -298,11 +298,20 @@
   margin: -0.5rem 0 0 0;
 }
 
+/* Magazine wall.
+
+   Photos keep their real proportions — nothing is cropped — so the layout has
+   to react to orientation instead: landscapes take a wide column, portraits a
+   narrow one. Mixed heights plus an offset on every second frame keep it from
+   settling into a grid. Orientation classes are baked into the markup so the
+   layout is right on first paint, with no reflow once the images load. */
 .gl-photos {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2.25rem 1.75rem;
-  margin: 2.5rem 0 0;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: row dense;
+  align-items: start;
+  gap: 3rem 1.75rem;
+  margin: 3rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -310,33 +319,38 @@
 .gl-photos > li {
   margin: 0;
   padding: 0;
+  grid-column: span 7;
 }
 
-/* The offset second column is what makes the wall read as posters rather
-   than a spreadsheet. */
-.gl-photos > li:nth-child(even) {
-  margin-top: 4rem;
-}
+.gl-photos > li.is-landscape { grid-column: span 7; }
+.gl-photos > li.is-portrait  { grid-column: span 5; }
+
+/* Slightly different spans on alternate frames so rows stop lining up. */
+.gl-photos > li.is-landscape:nth-child(3n + 2) { grid-column: span 6; }
+.gl-photos > li.is-portrait:nth-child(3n + 3)  { grid-column: span 4; }
+
+.gl-photos > li:nth-child(even) { margin-top: 3rem; }
+.gl-photos > li:nth-child(5n + 3) { margin-top: 1.5rem; }
 
 .gl-photo {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 2;
   border: none;
   padding: 0;
   background: rgba(0, 0, 0, 0.05);
   cursor: zoom-in;
   overflow: hidden;
-  font-size: 1rem;
+  font-size: 0;
+  line-height: 0;
   transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1),
     box-shadow 0.4s ease;
 }
 
+/* Whole frame, natural proportions — no object-fit crop. */
 .gl-photo img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   transition: transform 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
@@ -346,7 +360,7 @@
 }
 
 .gl-photo:hover img {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -449,11 +463,18 @@
 
   .gl-photos {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
+    gap: 1.75rem;
   }
 
-  /* No second column to stagger against on a phone. */
-  .gl-photos > li:nth-child(even) {
+  /* Nothing to interleave against on a phone — one clean column. */
+  .gl-photos > li,
+  .gl-photos > li.is-landscape,
+  .gl-photos > li.is-portrait,
+  .gl-photos > li.is-landscape:nth-child(3n + 2),
+  .gl-photos > li.is-portrait:nth-child(3n + 3),
+  .gl-photos > li:nth-child(even),
+  .gl-photos > li:nth-child(5n + 3) {
+    grid-column: 1 / -1;
     margin-top: 0;
   }
 
