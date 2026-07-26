@@ -135,7 +135,12 @@
         closeButton: true
       }).setHTML(buildPlacePopupContent(place));
 
-      var marker = new maplibregl.Marker({ color: '#1a1a1a' })
+      var marker = new maplibregl.Marker({
+        color: '#1a1a1a',
+        /* Markers on the far side of the globe otherwise bleed through at 20%
+           opacity, which reads as ghost pins floating over the ocean. */
+        opacityWhenCovered: '0'
+      })
         .setLngLat([place.lng, place.lat])
         .setPopup(popup)
         .addTo(map);
@@ -379,15 +384,18 @@
   function applySky() {
     if (!map.setSky) return;
     map.setSky({
-      'sky-color': '#0f2a44',
-      'sky-horizon-blend': 0.5,
-      'horizon-color': '#cfe4f2',
-      'horizon-fog-blend': 0.4,
-      'fog-color': '#ffffff',
-      /* 0 would paint the globe itself with the white fog colour, which is what
-         made it look washed out / see-through. 1 keeps the map's own colours. */
+      'sky-color': '#0b2137',
+      'sky-horizon-blend': 0.35,
+      'horizon-color': '#a8c8de',
+      'horizon-fog-blend': 0.2,
+      'fog-color': '#dfeaf3',
+      /* fog-ground-blend 0 would paint the globe itself in the fog colour.
+         1 leaves the map's own colours alone. */
       'fog-ground-blend': 1,
-      'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 0.9, 4, 0.7, 7, 0]
+      /* atmosphere-blend veils the globe's surface as well as drawing the rim
+         glow, so it has to stay low and fade out fast — at 0.7+ the whole map
+         reads as washed out / see-through. */
+      'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 0.45, 2.5, 0.18, 4, 0]
     });
   }
 
