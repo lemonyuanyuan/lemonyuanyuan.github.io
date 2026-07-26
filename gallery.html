@@ -6,7 +6,7 @@
     <title>Gallery | Xinyuan</title>
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/site-nav.css?v=4">
-    <link rel="stylesheet" href="assets/css/gallery.css?v=2">
+    <link rel="stylesheet" href="assets/css/gallery.css?v=3">
 </head>
 <body>
 
@@ -28,8 +28,11 @@
 
     <section class="wrapper style1 align-left">
         <div class="inner">
-            <h1>Gallery</h1>
-            <p>Here are some of my pictures</p>
+
+            <div class="gl-hero">
+                <h1 class="gl-title">Gallery</h1>
+                <p class="gl-lede">Here are some of my pictures</p>
+            </div>
 
             <section class="gl-intro">
                 <header>
@@ -38,65 +41,91 @@
                 <blockquote>始于dwp</blockquote>
             </section>
 
+            <!-- Filters -->
+            <div class="gl-filters" role="group" aria-label="Filter albums">
+                <span class="gl-filters__label">Filter</span>
+                <button type="button" class="gl-filter is-active" data-filter="all" aria-pressed="true">All</button>
+                <button type="button" class="gl-filter" data-filter="2024" aria-pressed="false">2024</button>
+                <button type="button" class="gl-filter" data-filter="2025" aria-pressed="false">2025</button>
+                <button type="button" class="gl-filter" data-filter="china" aria-pressed="false">China</button>
+                <button type="button" class="gl-filter" data-filter="abroad" aria-pressed="false">Abroad</button>
+                <span class="gl-count"></span>
+            </div>
+
+            <!-- Albums -->
             <ul class="gl-grid">
 
                 <li>
-                    <article class="gl-card" id="guilin">
+                    <article class="gl-card" id="guilin" data-tags="2024 china">
                         <a class="gl-card__link" href="album/guilin.html">
                             <span class="gl-card__frame">
                                 <img src="album/guilin/DSC_0167.JPG" alt="Guilin" loading="lazy" />
+                                <span class="gl-card__frames">2 frames</span>
                             </span>
+                            <p class="gl-card__meta"><span>2024/12</span></p>
                             <h2 class="gl-card__title">China-Guangxi</h2>
                         </a>
-                        <p class="gl-card__date">2024/12</p>
                         <p class="gl-card__where">Guilin</p>
-                        <a class="gl-card__cta" href="album/guilin.html">View</a>
+                        <div class="gl-card__actions">
+                            <a class="gl-card__cta" href="album/guilin.html">View <span class="gl-arrow">&rarr;</span></a>
+                        </div>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="guizhou">
+                    <article class="gl-card" id="guizhou" data-tags="2025 china">
                         <a class="gl-card__link" href="album/guizhou.html">
                             <span class="gl-card__frame">
                                 <img src="album/guizhou/DSC_2879-2.jpg" alt="Guizhou" loading="lazy" />
+                                <span class="gl-card__frames">2 frames</span>
                             </span>
+                            <p class="gl-card__meta"><span>2025/1</span></p>
                             <h2 class="gl-card__title">China-Guizhou</h2>
                         </a>
-                        <p class="gl-card__date">2025/1</p>
                         <p class="gl-card__where">Guiyang</p>
-                        <a class="gl-card__cta" href="album/guizhou.html">View</a>
+                        <div class="gl-card__actions">
+                            <a class="gl-card__cta" href="album/guizhou.html">View <span class="gl-arrow">&rarr;</span></a>
+                        </div>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="australia">
+                    <article class="gl-card" id="australia" data-tags="2025 abroad">
                         <a class="gl-card__link" href="album/australia.html">
                             <span class="gl-card__frame">
                                 <img src="album/australia/WechatIMG1455.jpeg" alt="Australia" loading="lazy" />
+                                <span class="gl-card__frames">3 frames</span>
                             </span>
+                            <p class="gl-card__meta"><span>2025/2</span></p>
                             <h2 class="gl-card__title">Australia</h2>
                         </a>
-                        <p class="gl-card__date">2025/2</p>
                         <p class="gl-card__where">Sydney · Melborne · Cairns</p>
-                        <a class="gl-card__cta" href="album/australia.html">View</a>
+                        <div class="gl-card__actions">
+                            <a class="gl-card__cta" href="album/australia.html">View <span class="gl-arrow">&rarr;</span></a>
+                        </div>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="japan-2025">
+                    <article class="gl-card" id="japan-2025" data-tags="2025 abroad">
                         <a class="gl-card__link" href="album/japan-2025.html">
                             <span class="gl-card__frame">
                                 <span class="gl-card__placeholder"></span>
                             </span>
+                            <p class="gl-card__meta"><span>2025/5</span></p>
                             <h2 class="gl-card__title">Japan</h2>
                         </a>
-                        <p class="gl-card__date">2025/5</p>
                         <p class="gl-card__where">Kyoto · Osaka</p>
-                        <a class="gl-card__cta" href="album/japan-2025.html">View</a>
+                        <div class="gl-card__actions">
+                            <a class="gl-card__cta" href="album/japan-2025.html">View <span class="gl-arrow">&rarr;</span></a>
+                        </div>
                     </article>
                 </li>
 
             </ul>
+
+            <p class="gl-empty" hidden>Nothing in that filter yet.</p>
+
         </div>
     </section>
 
@@ -109,6 +138,6 @@
         </div>
     </section>
 
-    <script src="assets/js/gallery.js?v=2"></script>
+    <script src="assets/js/gallery.js?v=3"></script>
 </body>
 </html>
