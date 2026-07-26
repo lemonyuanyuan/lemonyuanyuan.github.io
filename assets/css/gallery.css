@@ -298,12 +298,17 @@
   margin: -0.5rem 0 0 0;
 }
 
-/* Waterfall wall (Xiaohongshu-style): tight columns, minimal gutters, photos
-   at their natural proportions so nothing is cropped. CSS multicol balances the
-   column heights for us — no JS, no absolute positioning, no reflow. */
+/* Two-column waterfall, big frames, natural proportions — nothing cropped.
+
+   CSS multicol is the no-JS fallback; it packs tightly but balances columns
+   only roughly, which left a hole at the bottom of the short column. gallery.js
+   upgrades this to `.is-masonry`, placing each photo into whichever column is
+   currently shortest so both columns finish level. Items stay in DOM order
+   (they are positioned, not reparented) so the lightbox still steps through the
+   photos in the order they were shot. */
 .gl-photos {
-  column-count: 3;
-  column-gap: 0.7rem;
+  column-count: 2;
+  column-gap: 10px;
   margin: 2rem 0 0;
   padding: 0;
   list-style: none;
@@ -313,8 +318,18 @@
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
-  margin: 0 0 0.7rem 0;
+  margin: 0 0 10px 0;
   padding: 0;
+}
+
+.gl-photos.is-masonry {
+  column-count: initial;
+  position: relative;
+}
+
+.gl-photos.is-masonry > li {
+  position: absolute;
+  margin: 0;
 }
 
 .gl-photo {
@@ -340,11 +355,11 @@
 }
 
 .gl-photo:hover {
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
 }
 
 .gl-photo:hover img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -438,23 +453,15 @@
    Responsive
    -------------------------------------------------------------------------- */
 
-@media screen and (max-width: 980px) {
-  .gl-photos { column-count: 2; }
-}
-
 @media screen and (max-width: 736px) {
   .gl-year__label { font-size: 1.6rem; }
   .gl-year__count { margin-left: 0; width: 100%; }
   .gl-rail__track > li { flex-basis: 17rem; }
   .gl-card__title { font-size: 1.2rem; }
 
+  /* One big column on a phone — two would make each photo tiny. */
   .gl-photos {
-    column-count: 2;
-    column-gap: 0.5rem;
-  }
-
-  .gl-photos > li {
-    margin-bottom: 0.5rem;
+    column-count: 1;
   }
 
   .gl-lightbox__nav { font-size: 1.3rem; padding: 0.5rem 0.6rem; }
