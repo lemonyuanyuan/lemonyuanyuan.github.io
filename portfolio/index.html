@@ -103,6 +103,8 @@
           
             <li class="masthead__menu-item"><a href="#-news">News</a></li>
           
+            <li class="masthead__menu-item"><a href="#-publications">Publications</a></li>
+          
             <li class="masthead__menu-item"><a href="#-research">Research</a></li>
           
             <li class="masthead__menu-item"><a href="#-projects">Projects</a></li>
@@ -204,6 +206,17 @@ I am also enthusiastic about travel and photography — see my [personal site](h
 
 <!-- - *2025.05*: Academic homepage launched at [lemonyuanyuan.github.io/portfolio/](https://lemonyuanyuan.github.io/portfolio/).
 - *TODO*: Add your latest news here (paper accepted, internship, etc.). -->
+
+<p><span class="anchor" id="-publications"></span></p>
+<h1 id="publications">Publications</h1>
+
+<div class="pub-empty">
+  <p class="pub-empty__title">Nothing published yet.</p>
+  <p class="pub-empty__hint">
+    Work in progress &mdash; papers will be listed here as they land.
+    In the meantime, see <a href="#-research">Research</a> and <a href="#-projects">Projects</a>.
+  </p>
+</div>
 
 <p><span class="anchor" id="-research"></span></p>
 <h1 id="research">Research</h1>
@@ -307,6 +320,7 @@ I am also enthusiastic about travel and photography — see my [personal site](h
 
     <script src="/portfolio/assets/js/main.min.js"></script>
 <script src="/portfolio/assets/js/name-rotate.js"></script>
+<script src="/portfolio/assets/js/publications.js"></script>
 
 
 
@@ -321,23 +335,6 @@ I am also enthusiastic about travel and photography — see my [personal site](h
 </script>
 
 
-<script>
-    $(document).ready(function () {
-        
-        var gsDataBaseUrl = 'https://cdn.jsdelivr.net/gh/lemonyuanyuan/lemonyuanyuan.github.io@'
-        
-        $.getJSON(gsDataBaseUrl + "google-scholar-stats/gs_data.json", function (data) {
-            var totalCitation = data['citedby']
-            document.getElementById('total_cit').innerHTML = totalCitation;
-            var citationEles = document.getElementsByClassName('show_paper_citations')
-            Array.prototype.forEach.call(citationEles, element => {
-                var paperId = element.getAttribute('data')
-                var numCitations = data['publications'][paperId]['num_citations']
-                element.innerHTML = '| Citations: ' + numCitations;
-            });
-        });
-    })
-</script>
 
 
   </body>

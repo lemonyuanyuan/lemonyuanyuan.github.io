@@ -40,6 +40,11 @@ I am also enthusiastic about travel and photography — see my [personal site](h
 <!-- - *2025.05*: Academic homepage launched at [lemonyuanyuan.github.io/portfolio/](https://lemonyuanyuan.github.io/portfolio/).
 - *TODO*: Add your latest news here (paper accepted, internship, etc.). -->
 
+<span class='anchor' id='-publications'></span>
+# Publications
+
+{% include publications.html %}
+
 <span class='anchor' id='-research'></span>
 # Research
 

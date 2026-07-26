@@ -11,7 +11,6 @@ baseurl                  : "/portfolio"
 title                    : "Xinyuan Wang"
 description              : "Academic homepage of Xinyuan Wang."
 repository               : "lemonyuanyuan/lemonyuanyuan.github.io"
-google_scholar_stats_use_cdn : true
 
 # google analytics
 google_analytics_id      :  # get google_analytics_id from https://analytics.google.com/analytics/
@@ -70,7 +69,6 @@ include:
   - files
 exclude:
   - docs
-  - google_scholar_crawler
   - run_server.sh
   - README.md
   - CARD-TEMPLATE.html

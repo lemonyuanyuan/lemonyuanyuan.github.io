@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery | Xinyuan Wang</title>
-    <meta name="description" content="Photo sets from the places I've been." />
-    <link rel="icon" type="image/png" sizes="32x32" href="/portfolio/images/favicon-32x32.png?v=2" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/portfolio/images/favicon-16x16.png?v=2" />
+    <title>Gallery | Xinyuan</title>
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/site-nav.css?v=3">
-    <link rel="stylesheet" href="assets/css/gallery.css?v=1">
+    <link rel="stylesheet" href="assets/css/site-nav.css?v=4">
+    <link rel="stylesheet" href="assets/css/gallery.css?v=2">
 </head>
 <body>
 
@@ -17,13 +14,12 @@
     <header class="site-nav-bar wrapper style1 align-left">
         <div class="inner">
             <nav class="site-nav" aria-label="Site navigation">
-                <a class="site-nav__brand" href="index.html">Xinyuan Wang</a>
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="/portfolio/">Research</a></li>
                     <li><a href="travel.html">Travel</a></li>
                     <li><a href="gallery.html" aria-current="page">Gallery</a></li>
-                    <li><a href="https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd">Podcast</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
                     <li><a href="notes.html">Notes</a></li>
                 </ul>
             </nav>
@@ -32,134 +28,87 @@
 
     <section class="wrapper style1 align-left">
         <div class="inner">
+            <h1>Gallery</h1>
+            <p>Here are some of my pictures</p>
 
-            <!-- Hero -->
-            <div class="gl-hero">
-                <span class="gl-eyebrow">Gallery</span>
-                <h1 class="gl-title">See through my eyes.</h1>
-                <p class="gl-lede">
-                    Photo sets, one trip at a time. Everything here is also pinned on the
-                    <a href="travel.html">map</a> &mdash; that&rsquo;s usually the better way in.
-                </p>
-            </div>
+            <section class="gl-intro">
+                <header>
+                    <h2>2025</h2>
+                </header>
+                <blockquote>始于dwp</blockquote>
+            </section>
 
-            <!-- Filters -->
-            <div class="gl-filters" role="group" aria-label="Filter albums">
-                <span class="gl-filters__label">Filter</span>
-                <button type="button" class="gl-filter is-active" data-filter="all" aria-pressed="true">All</button>
-                <button type="button" class="gl-filter" data-filter="2024" aria-pressed="false">2024</button>
-                <button type="button" class="gl-filter" data-filter="2025" aria-pressed="false">2025</button>
-                <button type="button" class="gl-filter" data-filter="china" aria-pressed="false">China</button>
-                <button type="button" class="gl-filter" data-filter="abroad" aria-pressed="false">Abroad</button>
-                <span class="gl-count"></span>
-            </div>
-
-            <!-- Albums -->
             <ul class="gl-grid">
 
                 <li>
-                    <article class="gl-card" id="guilin" data-tags="2024 china">
+                    <article class="gl-card" id="guilin">
                         <a class="gl-card__link" href="album/guilin.html">
                             <span class="gl-card__frame">
-                                <img src="album/guilin/DSC_0167.JPG" alt="Karst peaks along the Li River in Guilin" loading="lazy" />
-                                <span class="gl-card__frames">2 frames</span>
+                                <img src="album/guilin/DSC_0167.JPG" alt="Guilin" loading="lazy" />
                             </span>
-                            <p class="gl-card__meta"><span>2024.12</span><span>China</span></p>
-                            <h2 class="gl-card__title">Guilin</h2>
+                            <h2 class="gl-card__title">China-Guangxi</h2>
                         </a>
-                        <p class="gl-card__where">Guangxi</p>
-                        <p class="gl-card__note">
-                            Karst peaks stacked along the Li River, and the mist that never quite lifts off them.
-                        </p>
-                        <div class="gl-card__actions">
-                            <a class="gl-card__cta" href="album/guilin.html">Open album <span class="gl-arrow">&rarr;</span></a>
-                            <a class="gl-card__cta" href="travel.html#map">On the map</a>
-                        </div>
+                        <p class="gl-card__date">2024/12</p>
+                        <p class="gl-card__where">Guilin</p>
+                        <a class="gl-card__cta" href="album/guilin.html">View</a>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="guizhou" data-tags="2025 china">
+                    <article class="gl-card" id="guizhou">
                         <a class="gl-card__link" href="album/guizhou.html">
                             <span class="gl-card__frame">
-                                <img src="album/guizhou/DSC_2879-2.jpg" alt="Winter street scene in Guiyang, Guizhou" loading="lazy" />
-                                <span class="gl-card__frames">2 frames</span>
+                                <img src="album/guizhou/DSC_2879-2.jpg" alt="Guizhou" loading="lazy" />
                             </span>
-                            <p class="gl-card__meta"><span>2025.01</span><span>China</span></p>
-                            <h2 class="gl-card__title">Guizhou</h2>
+                            <h2 class="gl-card__title">China-Guizhou</h2>
                         </a>
+                        <p class="gl-card__date">2025/1</p>
                         <p class="gl-card__where">Guiyang</p>
-                        <p class="gl-card__note">
-                            Winter streets, mountain air, and the kind of cold that makes food taste better.
-                        </p>
-                        <div class="gl-card__actions">
-                            <a class="gl-card__cta" href="album/guizhou.html">Open album <span class="gl-arrow">&rarr;</span></a>
-                            <a class="gl-card__cta" href="travel.html#map">On the map</a>
-                        </div>
+                        <a class="gl-card__cta" href="album/guizhou.html">View</a>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="australia" data-tags="2025 abroad">
+                    <article class="gl-card" id="australia">
                         <a class="gl-card__link" href="album/australia.html">
                             <span class="gl-card__frame">
-                                <img src="album/australia/WechatIMG1455.jpeg" alt="Harbour light in Sydney, Australia" loading="lazy" />
-                                <span class="gl-card__frames">3 frames</span>
+                                <img src="album/australia/WechatIMG1455.jpeg" alt="Australia" loading="lazy" />
                             </span>
-                            <p class="gl-card__meta"><span>2025.02</span><span>Australia</span></p>
                             <h2 class="gl-card__title">Australia</h2>
                         </a>
-                        <p class="gl-card__where">Sydney &middot; Melbourne &middot; Cairns</p>
-                        <p class="gl-card__note">
-                            Harbour light, coastal walks, and a reef that looked unreal in every photo I took of it.
-                        </p>
-                        <div class="gl-card__actions">
-                            <a class="gl-card__cta" href="album/australia.html">Open album <span class="gl-arrow">&rarr;</span></a>
-                            <a class="gl-card__cta" href="travel.html#map">On the map</a>
-                        </div>
+                        <p class="gl-card__date">2025/2</p>
+                        <p class="gl-card__where">Sydney · Melborne · Cairns</p>
+                        <a class="gl-card__cta" href="album/australia.html">View</a>
                     </article>
                 </li>
 
                 <li>
-                    <article class="gl-card" id="japan-2025" data-tags="2025 abroad">
+                    <article class="gl-card" id="japan-2025">
                         <a class="gl-card__link" href="album/japan-2025.html">
                             <span class="gl-card__frame">
-                                <span class="gl-card__placeholder">Photos coming</span>
+                                <span class="gl-card__placeholder"></span>
                             </span>
-                            <p class="gl-card__meta"><span>2025.05</span><span>Japan</span></p>
-                            <h2 class="gl-card__title">Kansai</h2>
+                            <h2 class="gl-card__title">Japan</h2>
                         </a>
-                        <p class="gl-card__where">Kyoto &middot; Nara &middot; Uji &middot; Osaka</p>
-                        <p class="gl-card__note">
-                            Temples at opening time, deer in the park, matcha by the Uji River. Still sorting the rolls.
-                        </p>
-                        <div class="gl-card__actions">
-                            <a class="gl-card__cta" href="album/japan-2025.html">Open album <span class="gl-arrow">&rarr;</span></a>
-                            <a class="gl-card__cta" href="travel.html#map">On the map</a>
-                        </div>
+                        <p class="gl-card__date">2025/5</p>
+                        <p class="gl-card__where">Kyoto · Osaka</p>
+                        <a class="gl-card__cta" href="album/japan-2025.html">View</a>
                     </article>
                 </li>
 
             </ul>
-
-            <p class="gl-empty" hidden>Nothing in that filter yet.</p>
-
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <p>&copy; 2026 Xinyuan Wang</p>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="travel.html">Travel</a></li>
-                <li><a href="notes.html">Notes</a></li>
-                <li><a href="mailto:lemonwxy2017@126.com">Email</a></li>
-            </ul>
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+            <footer>
+                <p>&copy; 2025 Xinyuan</p>
+            </footer>
         </div>
-    </footer>
+    </section>
 
-    <script src="assets/js/gallery.js?v=1"></script>
+    <script src="assets/js/gallery.js?v=2"></script>
 </body>
 </html>

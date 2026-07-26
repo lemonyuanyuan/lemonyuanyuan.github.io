@@ -1,0 +1,47 @@
+# Publications
+# ============
+# Each entry renders one item in the Publications section, grouped by year
+# (newest first). `year` and `title` are the only required fields.
+#
+# Fields:
+#   year        (required) number, e.g. 2026 — used for grouping and sorting
+#   title       (required) paper title
+#   authors     author list. Wrap your own name in ** ** to bold it:
+#               "Alice Chen, **Xinyuan Wang**, Bob Lee"
+#   venue       conference / journal, e.g. "NeurIPS 2026"
+#   badge       small pill, e.g. "Preprint" / "Oral" / "Under review"
+#   award       highlighted line, e.g. "Best Paper Award"
+#   description one-line summary
+#   image       images/your-figure.png  (put the file in academic-source/images/)
+#   selected    true  -> shown when the "Selected" filter is on
+#   links       list of { label, url }
+#
+# Uncomment the template below and fill it in for your first paper.
+
+# - year: 2026
+#   title: "The Title of Your First Paper"
+#   authors: "**Xinyuan Wang**, Co-author A, Co-author B"
+#   venue: "Conference on Something, 2026"
+#   badge: "Preprint"
+#   award: "Best Paper Award"
+#   description: "One sentence on what the paper does and why it matters."
+#   image: images/500x300.png
+#   selected: true
+#   links:
+#     - label: "PDF"
+#       url: "#"
+#     - label: "arXiv"
+#       url: "#"
+#     - label: "Code"
+#       url: "https://github.com/lemonyuanyuan"
+#     - label: "BibTeX"
+#       url: "#"
+
+# - year: 2025
+#   title: "An Earlier Workshop Paper"
+#   authors: "Co-author A, **Xinyuan Wang**"
+#   venue: "Workshop on Something, 2025"
+#   description: "Short summary."
+#   links:
+#     - label: "Paper"
+#       url: "#"

@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel | Xinyuan Wang</title>
-    <meta name="description" content="A map and journal of the places I've walked." />
-    <link rel="icon" type="image/png" sizes="32x32" href="/portfolio/images/favicon-32x32.png?v=2" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/portfolio/images/favicon-16x16.png?v=2" />
+    <title>Travel | Xinyuan</title>
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/site-nav.css?v=3">
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""
-    />
-    <link rel="stylesheet" href="assets/css/travel-map.css?v=6">
+    <link rel="stylesheet" href="assets/css/site-nav.css?v=4">
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" />
+    <link rel="stylesheet" href="assets/css/travel-map.css?v=7">
 </head>
 <body>
 
     <!-- Navigation -->
     <header class="site-nav-bar wrapper style1 align-left">
-        <div class="inner inner--wide">
+        <div class="inner">
             <nav class="site-nav" aria-label="Site navigation">
-                <a class="site-nav__brand" href="index.html">Xinyuan Wang</a>
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="/portfolio/">Research</a></li>
                     <li><a href="travel.html" aria-current="page">Travel</a></li>
                     <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="https://www.xiaoyuzhoufm.com/podcast/61fea2bf7057c183f67ebefd">Podcast</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
                     <li><a href="notes.html">Notes</a></li>
                 </ul>
             </nav>
@@ -37,152 +28,36 @@
     </header>
 
     <section class="wrapper style1 align-left">
-        <div class="inner inner--wide">
+        <div class="inner">
+            <h1>On the road</h1>
 
-            <!-- Hero -->
-            <div class="travel-hero">
-                <span class="travel-eyebrow">Travel</span>
-                <h1 class="travel-title">Places I&rsquo;ve walked,<br />stories I&rsquo;ve found.</h1>
-                <p class="travel-lede">
-                    A running log of where I&rsquo;ve been &mdash; some of it planned, most of it not.
-                    Start with the map, or scroll the list beside it. Where a place has photos,
-                    the card links straight into the <a href="gallery.html">Gallery</a>.
-                </p>
-            </div>
-
-            <ul class="travel-stats">
-                <li>
-                    <span class="travel-stat__value" id="stat-places">&mdash;</span>
-                    <span class="travel-stat__label">Places</span>
-                </li>
-                <li>
-                    <span class="travel-stat__value" id="stat-countries">&mdash;</span>
-                    <span class="travel-stat__label">Countries</span>
-                </li>
-                <li>
-                    <span class="travel-stat__value" id="stat-continents">&mdash;</span>
-                    <span class="travel-stat__label">Continents</span>
-                </li>
-                <li>
-                    <span class="travel-stat__value" id="stat-span">&mdash;</span>
-                    <span class="travel-stat__label">On the road</span>
-                </li>
-            </ul>
-
-            <!-- Map -->
-            <div class="travel-section" id="map">
-                <div class="travel-section-head">
-                    <h2>The map</h2>
-                    <p>Filled dots are places with a photo set. Everything else is a note to myself.</p>
-                </div>
-
-                <div class="travel-map-toolbar" role="group" aria-label="Map view">
-                    <div class="travel-map-modes">
-                        <button type="button" id="travel-map-mode-cities" class="travel-map-mode is-active" aria-pressed="true">By City</button>
-                        <button type="button" id="travel-map-mode-countries" class="travel-map-mode" aria-pressed="false">By Country</button>
-                    </div>
-                    <button type="button" id="travel-map-reset" class="travel-map-reset">Reset view</button>
-                </div>
-
+            <div class="travel-map-section">
+                <h2>Map</h2>
                 <p class="travel-map-hint">
-                    Drag to pan, scroll to zoom. Click a dot &mdash; or any place in the list &mdash; for the story and its photos.
+                    Drag to pan; scroll or pinch to zoom. Click a marker for a short card and a link to that place's gallery.
                 </p>
-
-                <div class="travel-map-shell">
-                    <div class="travel-map-frame">
-                        <div id="travel-map" class="travel-map" aria-label="Map of places visited"></div>
-                        <p class="travel-map-legend" hidden>Countries I&rsquo;ve visited</p>
-                        <span class="travel-map-badge"></span>
-                    </div>
-
-                    <aside class="travel-index" aria-label="Place index">
-                        <div class="travel-index__head">
-                            <label class="sr-only" for="travel-index-search">Search places</label>
-                            <input
-                                type="search"
-                                id="travel-index-search"
-                                class="travel-index__search"
-                                placeholder="Search a place or country…"
-                                autocomplete="off"
-                            />
-                        </div>
-                        <div class="travel-index__scroll" id="travel-index-scroll"></div>
-                    </aside>
+                <div class="travel-map-toolbar" role="group" aria-label="Map view">
+                    <button type="button" id="travel-map-mode-cities" class="travel-map-mode is-active" aria-pressed="true">By City</button>
+                    <button type="button" id="travel-map-mode-countries" class="travel-map-mode" aria-pressed="false">By Country</button>
+                </div>
+                <p class="travel-map-legend" hidden>Blue = countries I've visited</p>
+                <div class="travel-map-frame">
+                    <div id="travel-map" class="travel-map" aria-label="Travel map"></div>
                 </div>
             </div>
-
-            <!-- Albums: the direct bridge into the gallery -->
-            <div class="travel-section" id="albums">
-                <div class="travel-section-head">
-                    <h2>Photo sets</h2>
-                    <p>Trips I actually got the camera out for. Each one opens its place in the Gallery.</p>
-                </div>
-
-                <ul class="travel-albums">
-                    <li>
-                        <a class="travel-album" href="gallery.html#guilin">
-                            <span class="travel-album__frame">
-                                <img src="album/guilin/DSC_0167.JPG" alt="Karst peaks along the Li River, Guilin" loading="lazy" />
-                            </span>
-                            <p class="travel-album__meta">2024.12 &middot; China</p>
-                            <h3 class="travel-album__title">Guilin</h3>
-                            <p class="travel-album__where">Guangxi</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="travel-album" href="gallery.html#guizhou">
-                            <span class="travel-album__frame">
-                                <img src="album/guizhou/DSC_2879-2.jpg" alt="Winter streets in Guiyang, Guizhou" loading="lazy" />
-                            </span>
-                            <p class="travel-album__meta">2025.01 &middot; China</p>
-                            <h3 class="travel-album__title">Guizhou</h3>
-                            <p class="travel-album__where">Guiyang</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="travel-album" href="gallery.html#australia">
-                            <span class="travel-album__frame">
-                                <img src="album/australia/WechatIMG1455.jpeg" alt="Harbour light in Sydney, Australia" loading="lazy" />
-                            </span>
-                            <p class="travel-album__meta">2025.02 &middot; Australia</p>
-                            <h3 class="travel-album__title">Australia</h3>
-                            <p class="travel-album__where">Sydney &middot; Melbourne &middot; Cairns</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="travel-album" href="gallery.html#japan-2025">
-                            <span class="travel-album__frame">
-                                <span class="travel-album__placeholder">Photos coming</span>
-                            </span>
-                            <p class="travel-album__meta">2025.05 &middot; Japan</p>
-                            <h3 class="travel-album__title">Kansai</h3>
-                            <p class="travel-album__where">Kyoto &middot; Nara &middot; Uji &middot; Osaka</p>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer site-footer--wide">
-        <div class="site-footer__inner">
-            <p>&copy; 2026 Xinyuan Wang</p>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="notes.html">Notes</a></li>
-                <li><a href="mailto:lemonwxy2017@126.com">Email</a></li>
-            </ul>
+    <section class="wrapper style1 align-left">
+        <div class="inner">
+            <footer>
+                <p>&copy; 2025 Xinyuan</p>
+            </footer>
         </div>
-    </footer>
+    </section>
 
-    <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
-    ></script>
-    <script src="assets/js/travel-map.js?v=6"></script>
+    <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+    <script src="assets/js/travel-map.js?v=7"></script>
 </body>
 </html>

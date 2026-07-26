@@ -1,0 +1,84 @@
+{%- comment -%}
+  Publications list, grouped by year (newest first).
+  Data lives in _data/publications.yml. Renders an empty state when there is
+  nothing in it yet, so the section never looks broken.
+{%- endcomment -%}
+
+{%- assign pubs = site.data.publications -%}
+{%- assign pub_count = pubs | size -%}
+
+{% if pub_count > 0 %}
+  {%- assign selected_count = 0 -%}
+  {%- for p in pubs -%}
+    {%- if p.selected -%}{%- assign selected_count = selected_count | plus: 1 -%}{%- endif -%}
+  {%- endfor -%}
+
+  {% if selected_count > 0 %}
+  <div class="pub-filters" role="group" aria-label="Filter publications">
+    <button type="button" class="pub-filter is-active" data-pub-filter="all" aria-pressed="true">All</button>
+    <button type="button" class="pub-filter" data-pub-filter="selected" aria-pressed="false">Selected</button>
+    <span class="pub-filters__count"></span>
+  </div>
+  {% endif %}
+
+  {%- comment -%}
+    Group first, then sort the groups — sorting the flat list and reversing it
+    would also reverse the order of papers *within* a year. Grouping first keeps
+    each year in the order written in publications.yml.
+  {%- endcomment -%}
+  {%- assign grouped = pubs | group_by: "year" | sort: "name" | reverse -%}
+
+  <div class="pub-list">
+    {% for group in grouped %}
+    <section class="pub-year-group">
+      <h3 class="pub-year">{{ group.name }}</h3>
+
+      {% for p in group.items %}
+      <article class="pub-item{% if p.selected %} is-selected{% endif %}">
+        <div class="pub-item__figure">
+          {% if p.image %}
+          <img src="{{ p.image | relative_url }}" alt="Figure from {{ p.title }}" loading="lazy" />
+          {% else %}
+          <span class="pub-item__figure-empty" aria-hidden="true">{{ group.name }}</span>
+          {% endif %}
+        </div>
+
+        <div class="pub-item__body">
+          {% if p.badge %}<span class="pub-item__badge">{{ p.badge }}</span>{% endif %}
+
+          <h4 class="pub-item__title">
+            {%- assign primary = p.links | first -%}
+            {%- if primary and primary.url != "#" -%}<a href="{{ primary.url }}">{{ p.title }}</a>{%- else -%}{{ p.title }}{%- endif -%}
+          </h4>
+
+          {% if p.authors %}
+          <p class="pub-item__authors">{{ p.authors | markdownify | remove: "<p>" | remove: "</p>" | strip }}</p>
+          {% endif %}
+
+          {% if p.venue %}<p class="pub-item__venue"><em>{{ p.venue }}</em></p>{% endif %}
+
+          {% if p.award %}<p class="pub-item__award">{{ p.award }}</p>{% endif %}
+
+          {% if p.description %}<p class="pub-item__description">{{ p.description }}</p>{% endif %}
+
+          {% if p.links and p.links.size > 0 %}
+          <div class="pub-item__links">
+            {% for link in p.links %}<a class="pub-item__link" href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="pub-empty">
+    <p class="pub-empty__title">Nothing published yet.</p>
+    <p class="pub-empty__hint">
+      Work in progress &mdash; papers will be listed here as they land.
+      In the meantime, see <a href="#-research">Research</a> and <a href="#-projects">Projects</a>.
+    </p>
+  </div>
+{% endif %}

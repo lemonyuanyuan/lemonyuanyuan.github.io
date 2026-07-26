@@ -1,67 +1,20 @@
 /* ==========================================================================
    Gallery behaviour — no jQuery.
 
-   1. Filter chips on the album index.
-   2. Deep-link landing: travel.html links to gallery.html#guilin, so the
+   1. Deep-link landing: a map marker links to gallery.html#guilin, so the
       matching card is scrolled to and briefly outlined.
-   3. A small lightbox for the individual album pages.
+   2. A small lightbox for the individual album pages.
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  /* ------------------------------------------------------------- filtering */
-
-  function initFilters() {
-    var buttons = Array.prototype.slice.call(document.querySelectorAll('.gl-filter'));
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.gl-card'));
-    var counter = document.querySelector('.gl-count');
-    var empty = document.querySelector('.gl-empty');
-    if (!buttons.length || !cards.length) return;
-
-    function apply(filter) {
-      var shown = 0;
-
-      cards.forEach(function (card) {
-        var tags = (card.getAttribute('data-tags') || '').split(/\s+/);
-        var match = filter === 'all' || tags.indexOf(filter) !== -1;
-        card.hidden = !match;
-        if (match) shown++;
-      });
-
-      buttons.forEach(function (btn) {
-        var on = btn.getAttribute('data-filter') === filter;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-
-      if (counter) {
-        counter.textContent = shown + (shown === 1 ? ' album' : ' albums');
-      }
-      if (empty) empty.hidden = shown !== 0;
-    }
-
-    buttons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        apply(btn.getAttribute('data-filter') || 'all');
-      });
-    });
-
-    apply('all');
-  }
-
-  /* ------------------------------------------------------- deep-link target */
-
   function highlightTarget() {
     var hash = window.location.hash;
     if (!hash || hash.length < 2) return;
 
-    var id = hash.slice(1);
-    var card = document.getElementById(id);
+    var card = document.getElementById(hash.slice(1));
     if (!card || !card.classList.contains('gl-card')) return;
-
-    /* A hidden card (filtered out) still has to be reachable by link. */
-    card.hidden = false;
 
     window.requestAnimationFrame(function () {
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -72,16 +25,15 @@
     });
   }
 
-  /* --------------------------------------------------------------- lightbox */
-
   function initLightbox() {
     var triggers = Array.prototype.slice.call(document.querySelectorAll('.gl-photo'));
     if (!triggers.length) return;
 
     var sources = triggers.map(function (btn) {
+      var img = btn.querySelector('img');
       return {
-        src: btn.getAttribute('data-full') || btn.querySelector('img').getAttribute('src'),
-        alt: btn.querySelector('img').getAttribute('alt') || ''
+        src: btn.getAttribute('data-full') || img.getAttribute('src'),
+        alt: img.getAttribute('alt') || ''
       };
     });
 
@@ -152,7 +104,6 @@
   }
 
   function init() {
-    initFilters();
     initLightbox();
     highlightTarget();
     window.addEventListener('hashchange', highlightTarget);
