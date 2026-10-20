@@ -42,11 +42,14 @@
   image: images/mipgif.gif
   highlight: true
 
-- title: "Model-Based Geometry-Aware Generative Optimization for Constrained Locomotion"
+- title: "Model-Based Geometry-Aware Generative Optimization for Constrained Locomotion Planning"
   authors: "Zhilin He, **Xinyuan Wang**, [Changliu Liu](https://icontrol.ri.cmu.edu/people/changliu.html)"
   venue: "In submission to RA-L"
   year: 2026
   image: images/2gogif.gif
+  links:
+    - label: "arXiv"
+      url: "https://arxiv.org/abs/2610.07772"
   description: "Developing a geometry-aware optimization framework for constrained humanoid locomotion, with real-world validation on the Unitree G1 in narrow and obstacle-rich environments."
 
 - title: "Walking on Rough Terrain with Any Number of Legs"
