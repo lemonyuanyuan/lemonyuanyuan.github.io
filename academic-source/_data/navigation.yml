@@ -6,17 +6,14 @@ main:
   - title: "Education"
     url: "#-educations"
 
-  - title: "News"
-    url: "#-news"
+  # - title: "News"
+  #   url: "#-news"
 
-  - title: "Publications"
-    url: "#-publications"
+  - title: "Selected Projects"
+    url: "#-selected-projects"
 
-  - title: "Research"
-    url: "#-research"
-
-  - title: "Projects"
-    url: "#-projects"
+  - title: "Ongoing Projects"
+    url: "#-ongoing-projects"
 
   - title: "Miscellaneous"
     url: "#-miscellaneous"

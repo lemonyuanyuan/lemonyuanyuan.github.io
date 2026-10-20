@@ -1,0 +1,60 @@
+# Selected Projects
+# =================
+# One row per paper, shown in the order written here (newest first).
+# Rows follow Jon Barron's template: media on the left, text on the right,
+# and `highlight: true` rows on a pale yellow background.
+# ongoing_projects.yml uses the same fields.
+#
+# Fields (only `title` is required):
+#   title        paper title
+#   authors      author list in Markdown. Bold your own name, link co-authors:
+#                "**Xinyuan Wang**, [Advisor Name](https://...)"
+#   venue        shown in italics, e.g. "In submission to ICRA" or "ISRR"
+#   year         appended after the venue -> "ISRR, 2026"
+#   note         extra line under the venue, e.g. "Spotlight, IROS Workshop"
+#   links        list of { label, url }, shown after the venue on the same
+#                line and joined with " / ". Leave out `url` for plain text
+#                such as "code coming soon".
+#                The first link with a url also becomes the title link.
+#   description  one sentence: the problem, the idea, and the goal
+#   image        images/your-figure.png   (a .gif works too and plays on its own)
+#   video        images/your-demo.mp4
+#                Put full-size GIFs/videos in academic-source/images/_originals/
+#                and run scripts/optimize-media.sh; it writes the small copy
+#                into academic-source/images/ under the same name.
+#                video only        -> autoplays on a loop
+#                image + video     -> shows the image, plays the video on hover
+#   highlight    true -> pale yellow background (used for first-author papers)
+
+- title: "Hierarchical Policy Learning for Socially Aware Robot Navigation"
+  authors: "**Xinyuan Wang**, [Tribhi Kathuria](https://sites.google.com/umich.edu/tribhi-kathuria/home)"
+  venue: "In submission to ICRA"
+  year: 2027
+  description: "Introducing a hierarchical policy learning framework that combines interaction-level reasoning and motion control to enable socially aware navigation in narrow human–robot encounters."
+  image: images/shygif.gif
+  highlight: true
+
+- title: "Mixed-Integer Motion Planning for Multiple Traveling Salesmen Problems with Connected Visitation"
+  authors: "**Xinyuan Wang**, Lekang Zhou, Runhui Long, Zhitong Tang, [Zhongqiang Ren](https://rap-lab.github.io/team/zren/)"
+  venue: "In submission to T-RO"
+  year: 2026
+  description: "Formulating multi-robot task allocation and motion planning under connectivity constraints as a mixed-integer optimization problem with efficient convex reformulations."
+  image: images/mipgif.gif
+  highlight: true
+
+- title: "Model-Based Geometry-Aware Generative Optimization for Constrained Locomotion"
+  authors: "Zhilin He, **Xinyuan Wang**, [Changliu Liu](https://icontrol.ri.cmu.edu/people/changliu.html)"
+  venue: "In submission to RA-L"
+  year: 2026
+  image: images/2gogif.gif
+  description: "Developing a geometry-aware optimization framework for constrained humanoid locomotion, with real-world validation on the Unitree G1 in narrow and obstacle-rich environments."
+
+- title: "Walking on Rough Terrain with Any Number of Legs"
+  authors: "Zhuoyang Chen, **Xinyuan Wang**, [Shai Revzen](https://www.birds.eecs.umich.edu/)"
+  venue: "Bioinspiration & Biomimetics"
+  year: 2026
+  image: images/multipodgif.gif
+  description: "Investigating bio-inspired legged locomotion through a systematic study of control strategies and simulation-based evaluation on rough terrain."
+  links:
+    - label: "paper"
+      url: "https://doi.org/10.1088/1748-3190/ae9261"

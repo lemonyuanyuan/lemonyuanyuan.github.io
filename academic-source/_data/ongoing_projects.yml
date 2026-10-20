@@ -1,0 +1,9 @@
+# Ongoing Projects
+# Same fields as _data/selected_projects.yml (see the notes at the top of that file).
+
+- title: "Lifelong Multi-Agent Path Finding for Real-World Agents"
+  authors: "Carnegie Mellon University, advised by [Prof. Jiaoyang Li](https://jiaoyangli.me/)"
+  venue: "Ongoing"
+  year: "since May 2026"
+  video: images/kiva_N100_base_s15.mp4
+  description: "Developing a learning-guided lifelong MAPF framework for heterogeneous, nonholonomic agents, combining imitation learning with search-based planning for efficient coordination in dense environments."

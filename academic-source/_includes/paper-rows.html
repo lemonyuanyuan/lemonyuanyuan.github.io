@@ -1,0 +1,68 @@
+{%- comment -%}
+  Rows in the style of Jon Barron's template: media on the left, text on the
+  right, `highlight: true` rows on a pale yellow background.
+  Usage: {% include paper-rows.html items=site.data.selected_projects %}
+  Fields are documented at the top of _data/selected_projects.yml.
+{%- endcomment -%}
+
+{%- assign rows = include.items -%}
+
+{% if rows and rows.size > 0 %}
+<div class="paper-rows">
+  {% for p in rows %}
+  {%- assign title_url = p.url -%}
+  {%- unless title_url -%}
+    {%- for link in p.links -%}
+      {%- if link.url and link.url != "#" -%}{%- assign title_url = link.url -%}{%- break -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+
+  {%- capture links_html -%}
+    {%- for link in p.links -%}
+      {%- if link.url and link.url != "#" -%}<a href="{{ link.url }}">{{ link.label }}</a>{%- else -%}<span>{{ link.label }}</span>{%- endif -%}
+      {%- unless forloop.last %} / {% endunless -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- assign links_html = links_html | strip -%}
+
+  <article class="paper-row{% if p.highlight %} is-highlight{% endif %}">
+    <div class="paper-row__media{% unless p.image or p.video %} is-empty{% endunless %}">
+      {% if p.image and p.video %}
+      <img src="{{ p.image | relative_url }}" alt="{{ p.title }}" loading="lazy">
+      <video class="paper-row__hover-video" src="{{ p.video | relative_url }}" muted loop playsinline preload="none"></video>
+      {% elsif p.video %}
+      <video src="{{ p.video | relative_url }}" muted loop playsinline autoplay preload="metadata"></video>
+      {% elsif p.image %}
+      <img src="{{ p.image | relative_url }}" alt="{{ p.title }}" loading="lazy">
+      {% else %}
+      <span class="paper-row__media-empty" aria-hidden="true"></span>
+      {% endif %}
+    </div>
+
+    <div class="paper-row__body">
+      <div class="paper-row__title">
+        {%- if title_url -%}<a href="{{ title_url }}">{{ p.title }}</a>{%- else -%}{{ p.title }}{%- endif -%}
+      </div>
+
+      {% if p.authors %}
+      <div class="paper-row__authors">{{ p.authors | markdownify | remove: "<p>" | remove: "</p>" | strip }}</div>
+      {% endif %}
+
+      {% if p.venue %}
+      <div class="paper-row__venue"><em>{{ p.venue }}</em>{% if p.year %}, {{ p.year }}{% endif %}{% if links_html != "" %} &nbsp;/&nbsp; {{ links_html }}{% endif %}</div>
+      {% elsif links_html != "" %}
+      <div class="paper-row__links">{{ links_html }}</div>
+      {% endif %}
+
+      {% if p.note %}
+      <div class="paper-row__note">{{ p.note | markdownify | remove: "<p>" | remove: "</p>" | strip }}</div>
+      {% endif %}
+
+      {% if p.description %}
+      <p class="paper-row__description">{{ p.description }}</p>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}

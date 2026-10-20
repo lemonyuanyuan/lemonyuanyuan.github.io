@@ -23,15 +23,15 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 # Site Author
 author:
   name             : "Xinyuan Wang"
-  avatar           : "images/geek.jpeg"
+  avatar           : "images/avatar.jpg"
   bio              : "Undergraduate Student"
   location         :
   employer         : "University of Michigan, Ann Arbor"
-  employer_url     : "https://example.com"
-  cv               : "https://example.com/cv.pdf"
+  employer_url     : "https://umich.edu/"
+  cv               :  # e.g., "files/cv.pdf" (put the PDF in academic-source/files/)
   pubmed           : 
-  googlescholar    : "https://scholar.google.com/citations?user=YOUR_GOOGLE_SCHOLAR_ID"
-  email            : "lemonwxy2017@126.com"
+  googlescholar    :  # e.g., "https://scholar.google.com/citations?user=YOUR_ID"
+  email            : "wxinyuan@umich.edu"
   researchgate     :  # e.g., "https://www.researchgate.net/profile/yourprofile"
   uri              :
   bitbucket        :
